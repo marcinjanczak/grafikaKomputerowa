@@ -119,6 +119,34 @@ public class ImageModel {
            image = createImageFromPixelArray(imageArray);
         }
     }
+    public void trmakeGrayByRed(){
+        if (image != null){
+            var imageArray = getPixelArrayFromImage(image);
+            imageArray = createGrayByRed(imageArray);
+            image = createImageFromPixelArray(imageArray);
+        }
+    }
+    public void trmakeGrayByGreen(){
+        if (image != null){
+            var imageArray = getPixelArrayFromImage(image);
+            imageArray = createGrayByGreen(imageArray);
+            image = createImageFromPixelArray(imageArray);
+        }
+    } public void trmakeGrayByBlue(){
+        if (image != null){
+            var imageArray = getPixelArrayFromImage(image);
+            imageArray = createGrayByBlue(imageArray);
+            image = createImageFromPixelArray(imageArray);
+        }
+    }
+    public void trGrayByYUV(){
+        if(image != null){
+            var imageArray = getPixelArrayFromImage(image);
+
+            imageArray = createGrayByYUV(imageArray);
+            image = createImageFromPixelArray(imageArray);
+        }
+    }
     public void changeContrastAndBrightness(ContrAndBrightModel contrAndBrightModel){
         if(image != null){
             var imageArray = getPixelArrayFromImage(image);
@@ -200,11 +228,105 @@ public class ImageModel {
         }
         return newPixelArray;
     }
+    private Pixel[][] createGrayByRed(Pixel[][] pixelArray){
+        int width = pixelArray.length;
+        int height = pixelArray[0].length;
+        var newPixelArray = new Pixel[width][height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                Pixel pixel = pixelArray[x][y];
+
+                int r = pixel.getRedPixel();
+                int g = pixel.getRedPixel();
+                int b = pixel.getRedPixel();
+
+                newPixelArray[x][y] = new Pixel(r,g,b);
+            }
+        }
+        return newPixelArray;
+    }
+    private Pixel[][] createGrayByGreen(Pixel[][] pixelArray){
+        int width = pixelArray.length;
+        int height = pixelArray[0].length;
+        var newPixelArray = new Pixel[width][height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                Pixel pixel = pixelArray[x][y];
+
+                int r = pixel.getGreenPixel();
+                int g = pixel.getGreenPixel();
+                int b = pixel.getGreenPixel();
+
+
+                newPixelArray[x][y] = new Pixel(r,g,b);
+            }
+        }
+        return newPixelArray;
+    }
+    private Pixel[][] createGrayByBlue(Pixel[][] pixelArray){
+        int width = pixelArray.length;
+        int height = pixelArray[0].length;
+        var newPixelArray = new Pixel[width][height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                Pixel pixel = pixelArray[x][y];
+
+                int r = pixel.getBluePixel();
+                int g = pixel.getBluePixel();
+                int b = pixel.getBluePixel();
+
+
+                newPixelArray[x][y] = new Pixel(r,g,b);
+            }
+        }
+        return newPixelArray;
+    }
+    private Pixel[][] createGrayByYUV(Pixel[][] pixelArray){
+        int width = pixelArray.length;
+        int height = pixelArray[0].length;
+        var newPixelArray = new Pixel[width][height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Pixel pixel = pixelArray[x][y];
+
+                int r = pixel.getRedPixel();
+                int g = pixel.getGreenPixel();
+                int b = pixel.getBluePixel();
+
+                double doubleGray =(r * 0.299) + (g * 0.587) + (b * 0.114);
+
+                int gray = (int) Math.round(doubleGray);
+
+                r = gray;
+                g = gray;
+                b = gray;
+
+                newPixelArray[x][y] = new Pixel(r,g,b);
+            }
+        }
+        return newPixelArray;
+    }
     private Pixel[][] createNormalizeBrightnesImageArray(Pixel[][] pixelArray){
         int width = pixelArray.length;
         int height = pixelArray[0].length;
 
         ImageStats.MinMaxValues minMax = ImageStats.finMinMax(pixelArray);
+
+        System.out.println("Min R: "+ minMax.minR);
+        System.out.println("Max R: "+ minMax.maxR);
+
+        System.out.println("Min G: "+ minMax.minG);
+        System.out.println("Max G: "+ minMax.maxG);
+
+        System.out.println("Min B: "+ minMax.minB);
+        System.out.println("Max B: "+ minMax.maxB);
 
         int globalMin = Math.min(Math.min(minMax.minR, minMax.minG), minMax.maxB);
         int globalMax = Math.max(Math.max(minMax.maxR, minMax.maxG), minMax.maxB);

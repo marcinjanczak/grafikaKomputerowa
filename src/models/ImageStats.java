@@ -5,12 +5,24 @@ public class ImageStats {
         public int minR, maxR;
         public int minG, maxG;
         public int minB, maxB;
+
     }
     public static MinMaxValues finMinMax(Pixel[][] pixelArray){
         MinMaxValues result = new MinMaxValues();
+
+        result.minR = 255;
+        result.maxR = 0;
+
+        result.minG = 255;
+        result.maxG = 0;
+
+        result.minB = 255;
+        result.maxB = 0;
+
         for (int y = 0; y < pixelArray[0].length; y++) {
             for (int x = 0; x < pixelArray.length; x++) {
                 Pixel pixel = pixelArray[x][y];
+
 
                 // Składowa R
                 if (pixel.getRedPixel() < result.minR) result.minR = pixel.getRedPixel();

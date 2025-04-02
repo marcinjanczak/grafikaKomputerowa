@@ -163,6 +163,58 @@ public class ImageController {
         rightPanel.setModel(model);
         rightPanel.repaint();
     }
+    public void makeGrayByRed(){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadowanego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        var image = leftPanel.getModel().getCopyImage();
+        var model = new ImageModel(image);
+        model.trmakeGrayByRed();
+
+        rightPanel.setModel(model);
+        rightPanel.repaint();
+    }
+    public void makeGrayByGreen(){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadowanego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        var image = leftPanel.getModel().getCopyImage();
+        var model = new ImageModel(image);
+        model.trmakeGrayByGreen();
+
+        rightPanel.setModel(model);
+        rightPanel.repaint();
+    }
+    public void makeGrayByBlue(){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadowanego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        var image = leftPanel.getModel().getCopyImage();
+        var model = new ImageModel(image);
+        model.trmakeGrayByBlue();
+
+        rightPanel.setModel(model);
+        rightPanel.repaint();
+    }
+    public void makeGrayByYUV(){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadowanego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        var image = leftPanel.getModel().getCopyImage();
+        var model = new ImageModel(image);
+        model.trGrayByYUV();
+
+        rightPanel.setModel(model);
+        rightPanel.repaint();
+    }
+
+
+
+
     public void changeContrastAndBrightness(ContrAndBrightModel contrAndBrightModel){
         if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
             JOptionPane.showMessageDialog(mainFrame, "Brak załadowanego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);

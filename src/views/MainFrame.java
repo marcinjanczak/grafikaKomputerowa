@@ -6,7 +6,6 @@ import models.CircleModel;
 import models.ContrAndBrightModel;
 import models.LineModel;
 import models.RectangleModel;
-import transformations.Dilatation;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -141,10 +140,15 @@ public class MainFrame extends JFrame {
         menuBar.getDrawRectangleMenuItem().addActionListener(e -> showRectangleDialog());
         menuBar.getDrawLineMenuItem().addActionListener(e -> showLineDalog());
 
-        menuBar.getTransformDilatationMenuItem().addActionListener(e -> transformDilataionPicture());
+        menuBar.getMakegrByAyaverageGray().addActionListener(e -> transformDilataionPicture());
         menuBar.getChangeContrastAndBrightness().addActionListener(e -> changeContrastAndBrightess());
         menuBar.getTransformNegative().addActionListener(e -> transformNegative());
         menuBar.getTransformNormalizeBrightness().addActionListener(e -> transformNormalizeBrightness());
+
+        menuBar.getMakeByRedGray().addActionListener(e -> makeGrayByRed());
+        menuBar.getMakeByGreenGray().addActionListener(e -> makeGrayByGreen());
+        menuBar.getMakeByBlueGrey().addActionListener(e -> makeGrayByBlue());
+        menuBar.getMakeByYUV().addActionListener(e -> makeByYUV());
 
     }
 
@@ -208,6 +212,18 @@ public class MainFrame extends JFrame {
     }
     private void transformNormalizeBrightness(){
         imageController.normalizeBrightness();
+    }
+    private void makeGrayByRed(){
+        imageController.makeGrayByRed();
+    }
+    private void makeGrayByGreen(){
+        imageController.makeGrayByGreen();
+    }
+    private void makeGrayByBlue(){
+        imageController.makeGrayByBlue();
+    }
+    private void makeByYUV(){
+        imageController.makeGrayByYUV();
     }
 
     /**

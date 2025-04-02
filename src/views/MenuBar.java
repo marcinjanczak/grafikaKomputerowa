@@ -13,6 +13,7 @@ public class MenuBar extends JMenuBar {
     private final JMenu rightPanelMenu;
     private final JMenu editPanelMenu;
     private final  JMenu transformationsPanelMenu;
+    private final JMenu dilatationsPanelMenu;
 
     private final JMenuItem openFileMenuItem;
     private final JMenuItem saveFileMenuItem;
@@ -28,10 +29,15 @@ public class MenuBar extends JMenuBar {
     private final JMenuItem drawRectangleMenuItem;
     private final JMenuItem drawLineMenuItem;
 
-    private final JMenuItem transformDilatationMenuItem;
     private final JMenuItem changeContrastAndBrightness;
     private final JMenuItem transformNegative;
     private final JMenuItem transformNormalizeBrightness;
+
+    private final JMenuItem makegrByAyaverageGray;
+    private final JMenuItem makeByRedGray;
+    private final JMenuItem makeByGreenGray;
+    private final JMenuItem makeByBlueGrey;
+    private final JMenuItem makeByYUV;
 
     public MenuBar() {
         // Tworzenie głównych menu
@@ -40,6 +46,7 @@ public class MenuBar extends JMenuBar {
         rightPanelMenu = new JMenu("Prawy panel");
         editPanelMenu = new JMenu("Edycja");
         transformationsPanelMenu = new JMenu("Transformacje");
+        dilatationsPanelMenu = new JMenu("Szarosć");
 
         // Menu plik
         openFileMenuItem = new JMenuItem("Otwórz");
@@ -61,12 +68,17 @@ public class MenuBar extends JMenuBar {
         drawLineMenuItem = new JMenuItem("Narysuj linie");
 
         // Menu Transformacje
-        transformDilatationMenuItem = new JMenuItem("Poszarz");
+
+
         changeContrastAndBrightness = new JMenuItem("Zmień kontrast i jasność");
         transformNegative = new JMenuItem("Zrób Negatyw");
         transformNormalizeBrightness = new JMenuItem("Normalizuj jasność");
 
-
+        makegrByAyaverageGray = new JMenuItem("Poszarz według sredniej");
+        makeByRedGray = new JMenuItem("Według czerwonego");
+        makeByGreenGray = new JMenuItem("Według zielonego");
+        makeByBlueGrey = new JMenuItem("Według niebieskiego");
+        makeByYUV = new JMenuItem("Według YUV");
 
         // Dodanie elementów do menu Plik
         fileMenu.add(openFileMenuItem);
@@ -88,10 +100,17 @@ public class MenuBar extends JMenuBar {
         editPanelMenu.add(drawLineMenuItem);
 
         // Dodawnie elementów do Transformacja
-        transformationsPanelMenu.add(transformDilatationMenuItem);
+        transformationsPanelMenu.add(makegrByAyaverageGray);
         transformationsPanelMenu.add(changeContrastAndBrightness);
         transformationsPanelMenu.add(transformNegative);
         transformationsPanelMenu.add(transformNormalizeBrightness);
+
+        // Dodawanie elementów Szaroci;
+        dilatationsPanelMenu.add(makegrByAyaverageGray);
+        dilatationsPanelMenu.add(makeByRedGray);
+        dilatationsPanelMenu.add(makeByGreenGray);
+        dilatationsPanelMenu.add(makeByBlueGrey);
+        dilatationsPanelMenu.add(makeByYUV);
 
         // Dodawanie wszystkich menu do paska menu
         add(fileMenu);
@@ -99,6 +118,7 @@ public class MenuBar extends JMenuBar {
         add(rightPanelMenu);
         add(editPanelMenu);
         add(transformationsPanelMenu);
+        add(dilatationsPanelMenu);
     }
 
     public JMenuItem getOpenFileMenuItem() {
@@ -139,8 +159,8 @@ public class MenuBar extends JMenuBar {
     public  JMenuItem getDrawLineMenuItem(){
         return drawLineMenuItem;
     }
-    public JMenuItem getTransformDilatationMenuItem(){
-        return  transformDilatationMenuItem;
+    public JMenuItem getMakegrByAyaverageGray(){
+        return makegrByAyaverageGray;
     }
     public JMenuItem getChangeContrastAndBrightness(){
         return changeContrastAndBrightness;
@@ -152,4 +172,19 @@ public class MenuBar extends JMenuBar {
         return transformNormalizeBrightness;
     }
 
+    public JMenuItem getMakeByRedGray() {
+        return makeByRedGray;
+    }
+
+    public JMenuItem getMakeByGreenGray() {
+        return makeByGreenGray;
+    }
+
+    public JMenuItem getMakeByBlueGrey() {
+        return makeByBlueGrey;
+    }
+
+    public JMenuItem getMakeByYUV() {
+        return makeByYUV;
+    }
 }

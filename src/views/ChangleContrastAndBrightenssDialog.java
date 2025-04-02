@@ -7,8 +7,8 @@ import java.awt.*;
 import java.util.Hashtable;
 
 public class ChangleContrastAndBrightenssDialog extends JDialog {
-    private final JSlider brightnessSlider = new JSlider(JSlider.HORIZONTAL, -100,100,0);
-    private final JSlider contrastSlider = new JSlider(JSlider.HORIZONTAL,0,30,10);
+    private final JSlider brightnessSlider = new JSlider(JSlider.HORIZONTAL, 0,255,0);
+    private final JSlider contrastSlider = new JSlider(JSlider.HORIZONTAL,0,100,10);
     private Boolean confirmed = false;
 
     public ChangleContrastAndBrightenssDialog(JFrame parent) {
