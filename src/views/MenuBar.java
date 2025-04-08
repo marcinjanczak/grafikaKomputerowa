@@ -14,6 +14,7 @@ public class MenuBar extends JMenuBar {
     private final JMenu editPanelMenu;
     private final  JMenu transformationsPanelMenu;
     private final JMenu dilatationsPanelMenu;
+    private final JMenu curvePanelMenu;
 
     private final JMenuItem openFileMenuItem;
     private final JMenuItem saveFileMenuItem;
@@ -39,6 +40,8 @@ public class MenuBar extends JMenuBar {
     private final JMenuItem makeByBlueGrey;
     private final JMenuItem makeByYUV;
 
+    private final JMenuItem makeCurve;
+
     public MenuBar() {
         // Tworzenie głównych menu
         fileMenu = new JMenu("Plik");
@@ -47,6 +50,7 @@ public class MenuBar extends JMenuBar {
         editPanelMenu = new JMenu("Edycja");
         transformationsPanelMenu = new JMenu("Transformacje");
         dilatationsPanelMenu = new JMenu("Szarosć");
+        curvePanelMenu = new JMenu("Krzywizna");
 
         // Menu plik
         openFileMenuItem = new JMenuItem("Otwórz");
@@ -80,6 +84,8 @@ public class MenuBar extends JMenuBar {
         makeByBlueGrey = new JMenuItem("Według niebieskiego");
         makeByYUV = new JMenuItem("Według YUV");
 
+        makeCurve = new JMenuItem("Wyznacz krzywą");
+
         // Dodanie elementów do menu Plik
         fileMenu.add(openFileMenuItem);
         fileMenu.add(saveFileMenuItem);
@@ -112,6 +118,8 @@ public class MenuBar extends JMenuBar {
         dilatationsPanelMenu.add(makeByBlueGrey);
         dilatationsPanelMenu.add(makeByYUV);
 
+        curvePanelMenu.add(makeCurve);
+
         // Dodawanie wszystkich menu do paska menu
         add(fileMenu);
         add(leftPanelMenu);
@@ -119,6 +127,7 @@ public class MenuBar extends JMenuBar {
         add(editPanelMenu);
         add(transformationsPanelMenu);
         add(dilatationsPanelMenu);
+        add(curvePanelMenu);
     }
 
     public JMenuItem getOpenFileMenuItem() {
@@ -186,5 +195,8 @@ public class MenuBar extends JMenuBar {
 
     public JMenuItem getMakeByYUV() {
         return makeByYUV;
+    }
+    public JMenuItem getMakeCurve(){
+        return makeCurve;
     }
 }

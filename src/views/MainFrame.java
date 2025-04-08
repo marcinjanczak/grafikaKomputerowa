@@ -150,6 +150,8 @@ public class MainFrame extends JFrame {
         menuBar.getMakeByBlueGrey().addActionListener(e -> makeGrayByBlue());
         menuBar.getMakeByYUV().addActionListener(e -> makeByYUV());
 
+        menuBar.getMakeCurve().addActionListener(e-> makeCurve());
+
     }
 
     /**
@@ -180,6 +182,11 @@ public class MainFrame extends JFrame {
     private void transformDilataionPicture(){
         //TODO: dodać wywołanie funkcji w imagerController
         imageController.transformDilataion();
+    }
+    private void makeCurve(){
+        MakeCurveDialog dialog = new MakeCurveDialog(this);
+        dialog.setVisible(true);
+
     }
 
     private void changeContrastAndBrightess(){
