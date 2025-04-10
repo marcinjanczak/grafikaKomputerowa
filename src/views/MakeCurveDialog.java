@@ -13,7 +13,6 @@ public class MakeCurveDialog extends JDialog{
     private List<Point> selectedPoints = new ArrayList<>();
     private BufferedImage image;
 
-
     public MakeCurveDialog(JFrame parent) {
         super(parent,"Wybierz punkty", true);
         setSize(300,200);
@@ -59,7 +58,7 @@ public class MakeCurveDialog extends JDialog{
             public void mouseClicked(MouseEvent e) {
                 if (image != null) {
                     selectedPoints.add(e.getPoint());
-                    panel.repaint(); // Odświeżanie panelu
+                    panel.repaint();
                 }
             }
         });

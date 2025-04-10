@@ -75,6 +75,8 @@ public class LinesDialog extends JDialog {
             buttonPanel.add(cancelButton);
             return buttonPanel;
         }
+
+
         public LineModel getLine() {
             if (confirmed) {
                 return new LineModel(

@@ -171,6 +171,18 @@ public class ImageModel {
             image = createImageFromPixelArray(imageArray);
         }
     }
+    public void addFilter(){
+        if(image != null){
+//            var imageArray = getPixelArrayFromImage(imageArray);
+//            imageArray = createArrayWithFilter(imageArray,filterArray);
+
+//            image = createImageFromPixelArray(imageArray);
+        }
+    }
+
+
+
+
     private Pixel[][] getPixelArrayFromImage(BufferedImage image){
         int height = image.getHeight();
         int width = image.getWidth();
@@ -204,6 +216,31 @@ public class ImageModel {
             }
         } return image;
     }
+    private Pixel[][] createArrayWithFilter(Pixel[][] pixelArray, int[][] filterArray){
+        int width = pixelArray.length;
+        int height = pixelArray[0].length;
+        var newPixelArray = new Pixel[width][height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                Pixel pixel = pixelArray[x][y];
+
+                int r = pixel.getRedPixel();
+                int g = pixel.getGreenPixel();
+                int b = pixel.getBluePixel();
+
+
+
+                newPixelArray[x][y] = new Pixel(r,g,b);
+            }
+        }
+
+        return newPixelArray;
+    }
+
+
+
     private Pixel[][] createGrayPixelImageArray(Pixel[][] pixelArray){
         int width = pixelArray.length;
         int height = pixelArray[0].length;

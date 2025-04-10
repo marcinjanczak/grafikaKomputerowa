@@ -139,6 +139,26 @@ public class ImageController {
 
         rightPanel.repaint(); // Ponownie
     }
+
+    public void addFilter(FilterModel filterModel){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadownego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        var image = leftPanel.getModel().getCopyImage();
+        var model = new ImageModel(image);
+
+
+
+
+
+
+        rightPanel.setModel(model);
+        rightPanel.repaint();
+    }
+
+
+
     public void drawline(LineModel line){
         if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
             JOptionPane.showMessageDialog(mainFrame, "Brak załadownego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);

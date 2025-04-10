@@ -14,6 +14,7 @@ public class MenuBar extends JMenuBar {
     private final JMenu editPanelMenu;
     private final  JMenu transformationsPanelMenu;
     private final JMenu dilatationsPanelMenu;
+    private final JMenu filtersPanelManu;
     private final JMenu curvePanelMenu;
 
     private final JMenuItem openFileMenuItem;
@@ -40,6 +41,8 @@ public class MenuBar extends JMenuBar {
     private final JMenuItem makeByBlueGrey;
     private final JMenuItem makeByYUV;
 
+    private final JMenuItem choseFilter;
+
     private final JMenuItem makeCurve;
 
     public MenuBar() {
@@ -50,6 +53,7 @@ public class MenuBar extends JMenuBar {
         editPanelMenu = new JMenu("Edycja");
         transformationsPanelMenu = new JMenu("Transformacje");
         dilatationsPanelMenu = new JMenu("Szarosć");
+        filtersPanelManu = new JMenu("Filtry");
         curvePanelMenu = new JMenu("Krzywizna");
 
         // Menu plik
@@ -83,6 +87,8 @@ public class MenuBar extends JMenuBar {
         makeByGreenGray = new JMenuItem("Według zielonego");
         makeByBlueGrey = new JMenuItem("Według niebieskiego");
         makeByYUV = new JMenuItem("Według YUV");
+
+        choseFilter = new JMenuItem("Wybierz filter");
 
         makeCurve = new JMenuItem("Wyznacz krzywą");
 
@@ -118,6 +124,10 @@ public class MenuBar extends JMenuBar {
         dilatationsPanelMenu.add(makeByBlueGrey);
         dilatationsPanelMenu.add(makeByYUV);
 
+        // Dodawanie elementów filtrów
+        filtersPanelManu.add(choseFilter);
+
+
         curvePanelMenu.add(makeCurve);
 
         // Dodawanie wszystkich menu do paska menu
@@ -128,6 +138,7 @@ public class MenuBar extends JMenuBar {
         add(transformationsPanelMenu);
         add(dilatationsPanelMenu);
         add(curvePanelMenu);
+        add(filtersPanelManu);
     }
 
     public JMenuItem getOpenFileMenuItem() {
@@ -198,5 +209,8 @@ public class MenuBar extends JMenuBar {
     }
     public JMenuItem getMakeCurve(){
         return makeCurve;
+    }
+    public JMenuItem getChoseFilter() {
+        return choseFilter;
     }
 }

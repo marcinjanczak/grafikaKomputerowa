@@ -2,10 +2,7 @@ package views;
 
 import controllers.FileController;
 import controllers.ImageController;
-import models.CircleModel;
-import models.ContrAndBrightModel;
-import models.LineModel;
-import models.RectangleModel;
+import models.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -150,6 +147,8 @@ public class MainFrame extends JFrame {
         menuBar.getMakeByBlueGrey().addActionListener(e -> makeGrayByBlue());
         menuBar.getMakeByYUV().addActionListener(e -> makeByYUV());
 
+        menuBar.getChoseFilter().addActionListener(e -> showFilterDialog());
+
         menuBar.getMakeCurve().addActionListener(e-> makeCurve());
 
     }
@@ -179,8 +178,16 @@ public class MainFrame extends JFrame {
      * @see CircleModel
      * @see ImageController#drawCircle(CircleModel)
      */
+    private void showFilterDialog(){
+        FilterDialog dialog = new FilterDialog(this);
+        dialog.setVisible(true);
+        FilterModel filterModel = dialog.getFilterModel();
+//        System.out.println(filterModel.getName()+" value: "+filterModel.getThershold() );
+        imageController.addFilter(filterModel);
+
+       // TODO : Pobrać dane z okna dialogowego i przesłać do imageController
+    }
     private void transformDilataionPicture(){
-        //TODO: dodać wywołanie funkcji w imagerController
         imageController.transformDilataion();
     }
     private void makeCurve(){
