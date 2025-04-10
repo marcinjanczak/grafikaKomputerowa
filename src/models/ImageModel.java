@@ -171,12 +171,13 @@ public class ImageModel {
             image = createImageFromPixelArray(imageArray);
         }
     }
-    public void addFilter(){
+    public void addFilter(float[][] filterArray){
         if(image != null){
-//            var imageArray = getPixelArrayFromImage(imageArray);
-//            imageArray = createArrayWithFilter(imageArray,filterArray);
+            var imageArray = getPixelArrayFromImage(image);
+            imageArray = createArrayWithFilter(imageArray,filterArray);
 
-//            image = createImageFromPixelArray(imageArray);
+
+            image = createImageFromPixelArray(imageArray);
         }
     }
 
@@ -216,7 +217,11 @@ public class ImageModel {
             }
         } return image;
     }
-    private Pixel[][] createArrayWithFilter(Pixel[][] pixelArray, int[][] filterArray){
+    private Pixel[][] createArrayWithFilter(Pixel[][] pixelArray, float[][] filterMatrix){
+        if (filterMatrix.length != 3 || filterMatrix[0].length != 3) {
+            throw new IllegalArgumentException("Macierz filtra musi być 3x3");
+        }
+
         int width = pixelArray.length;
         int height = pixelArray[0].length;
         var newPixelArray = new Pixel[width][height];
@@ -224,19 +229,38 @@ public class ImageModel {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
 
-                Pixel pixel = pixelArray[x][y];
+                float sumR = 0, sumG = 0, sumB = 0;
 
-                int r = pixel.getRedPixel();
-                int g = pixel.getGreenPixel();
-                int b = pixel.getBluePixel();
+                // Przechodzimy przez sąsiedztwo 3x3
+                for (int fy = 0; fy < 3; fy++) {
+                    for (int fx = 0; fx < 3; fx++) {
+                        int imageX = x + fx - 1;
+                        int imageY = y + fy - 1;
 
+                        Pixel neighbor = pixelArray[imageX][imageY];
+                        float weight = filterMatrix[fy][fx];
 
+                        sumR += neighbor.getRedPixel() * weight;
+                        sumG += neighbor.getGreenPixel() * weight;
+                        sumB += neighbor.getBluePixel() * weight;
+                    }
+                }
+
+                // Przycinanie wartości do zakresu 0-255
+                int r = clamp((int) sumR);
+                int g = clamp((int) sumG);
+                int b = clamp((int) sumB);
+
+                newPixelArray[x][y] = new Pixel(r, g, b);
 
                 newPixelArray[x][y] = new Pixel(r,g,b);
             }
         }
 
         return newPixelArray;
+    }
+    private int clamp(int value) {
+        return Math.max(0, Math.min(255, value));
     }
 
 

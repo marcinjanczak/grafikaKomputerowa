@@ -28,10 +28,10 @@ public class FilterDialog extends JDialog{
     private JPanel getMainPanel(){
         var panel = new JPanel(new GridLayout(4,0,10,10));
         String[] filters = {
-                "Blur", "Gaussian Blur",
-                "Sharpen", "Laplace",
-                "Medianowy", "Maksymalny", "Minimalny",
-                "Sobel (Poziomy)", "Sobel (Pionowy)", "Roberts"
+                "blur", "gaussian Blur",
+                "sharpen", "laplace",
+                "medianowy", "maksymalny", "minimalny",
+                "sobel (Poziomy)", "sobel (Pionowy)", "roberts"
         };
         filterComboBox = new JComboBox<>(filters);
         theresholdField = new JTextField("128");
