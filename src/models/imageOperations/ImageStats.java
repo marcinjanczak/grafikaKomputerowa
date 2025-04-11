@@ -1,4 +1,6 @@
-package models;
+package models.imageOperations;
+
+import models.Pixel;
 
 public class ImageStats {
     public static class MinMaxValues {
