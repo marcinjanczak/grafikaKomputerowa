@@ -128,7 +128,7 @@ public class MenuBar extends JMenuBar {
         filtersPanelManu.add(choseFilter);
 
 
-        curvePanelMenu.add(makeCurve);
+//        curvePanelMenu.add(makeCurve);
 
         // Dodawanie wszystkich menu do paska menu
         add(fileMenu);
@@ -169,28 +169,38 @@ public class MenuBar extends JMenuBar {
         return drawCircleMenuItem;
     }
 
-    // TODO: Dodać metody getter dla nowych elementów menu.
     public JMenuItem getDrawRectangleMenuItem(){
         return drawRectangleMenuItem;
     }
+
     public JMenuItem getCopyRightPanelMenuItem(){
         return copyRightPanelMenuItem;
     }
-    public  JMenuItem getDrawLineMenuItem(){
+
+    public JMenuItem getDrawLineMenuItem(){
         return drawLineMenuItem;
     }
+
     public JMenuItem getMakegrByAyaverageGray(){
         return makegrByAyaverageGray;
     }
+
     public JMenuItem getChangeContrastAndBrightness(){
         return changeContrastAndBrightness;
     }
+
     public JMenuItem getTransformNegative(){
         return transformNegative;
     }
+
     public JMenuItem getTransformNormalizeBrightness(){
         return transformNormalizeBrightness;
     }
+
+
+    ///
+    /// Gettery dla poszarzania
+    ///
 
     public JMenuItem getMakeByRedGray() {
         return makeByRedGray;
@@ -207,9 +217,16 @@ public class MenuBar extends JMenuBar {
     public JMenuItem getMakeByYUV() {
         return makeByYUV;
     }
+
+    ///
+    /// Gettery dla tworzenia krzywej
+    ///
     public JMenuItem getMakeCurve(){
         return makeCurve;
     }
+    ///
+    /// Gettery dla wybierania filtrów wielopunktowych
+    ///
     public JMenuItem getChoseFilter() {
         return choseFilter;
     }

@@ -66,23 +66,11 @@ public class MainFrame extends JFrame {
         return leftPanel;
     }
 
-    /**
-     * Dostosowuje rozmiar okna do załadowanego obrazu z lewego panelu.
-     *
-     * <p>
-     * Metoda pobiera obraz z lewego panelu i sprawdza jego rozmiary.
-     * Szerokość i wysokość okna są zwiększane w zależności od wymiarów obrazu
-     * </p>
-     *
-     * @see javax.swing.JFrame#setSize(int, int)
-     * @see javax.swing.JFrame#setLocationRelativeTo(java.awt.Component)
-     */
     public void adjustWindowSize() {
         var image = leftPanel.getModel().getImage();
         if (image == null) {
             return;
         }
-
         // Obliczenie nowej szerokości okna.
         // Okno powinno mieć co najmniej dwukrotność szerokości obrazu.
         // + 100 - dodaje dodatkową przestrzeń dla marginesów.
@@ -95,32 +83,6 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    /**
-     * <p>Metoda inicjalizację obsługę zdarzeń dla elementów menu w pasku narzędzi.
-     * Wykorzystuje wyrażenia lambda jako implementację interfejsu {@code java.awt.event.ActionListener}.<p>
-     *
-     * <p>Każde wywołanie {@code addActionListener(...)} wymaga przekazania obiektu implementującego interfejs {@code ActionListener}.
-     * Zamiast tworzenia anonimowych klas wewnętrznych, wykorzystujemy wyrażenia lambda {@code (_ -> metoda())}.
-     * _ jest tutaj symbolem oznaczającym, że argument (obiekt zdarzenia {@code ActionEvent}) nie jest wykorzystywany.
-     * Po prawej stronie operatora {@code ->} znajduje się wywołanie metody, które zostanie wykonane po kliknięciu elementu menu.</p>
-     *
-     * <p>Jako argument {@code addActionListener(...)} można przekazać również anonimową klasę wewnętrzną.</p>
-     *
-     * <pre>
-     * {@code
-     *      menuBar.getOpenFileMenuItem().addActionListener(new ActionListener() {
-     *          @Override
-     *          public void actionPerformed(ActionEvent e) {
-     *              showFileChooserDialog();
-     *          }
-     *      });
-     * }
-     * </pre>
-     *
-     * @see java.awt.event.ActionListener
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     * @see javax.swing.AbstractButton#addActionListener(ActionListener)
-     */
     private void setMenuBarListeners() {
         menuBar.getOpenFileMenuItem().addActionListener(e -> showFileChooserDialog());
 
@@ -131,7 +93,6 @@ public class MainFrame extends JFrame {
         menuBar.getClearLeftPanelMenuItem().addActionListener(e -> imageController.clearLeftPanel());
 
         menuBar.getClearRightPanelMenuItem().addActionListener(e -> imageController.clearRightPanel());
-        // TODO: Dodać nasłuch na opcję kopiowania obrazu z prawego panelu do lewego panelu. W addActionListener należy wywołać metodę copyRightPanel() z kontrolera ImageController.
         menuBar.getCopyRightPanelMenuItem().addActionListener(e -> imageController.copyRightPanel());
 
         menuBar.getDrawCircleMenuItem().addActionListener(e -> showCircleDialog());
@@ -154,11 +115,7 @@ public class MainFrame extends JFrame {
 
     }
 
-    /**
-     * Metoda otwiera okno dialogowe umożliwiające użytkownikowi wprowadzenie parametrów prostokąta, który zostanie narysowany na wczytanym obrazie.
-     */
     private void showRectangleDialog() {
-        // TODO: Wyświetlić okno dialogowe z formularzem dla parametrów prostokąta. Wywołać metodę kontrolera drawRectangle().
         RectangleDialog dialog = new RectangleDialog(this);
         dialog.setVisible(true);
         RectangleModel rectangle = dialog.getRectangle();
@@ -167,24 +124,12 @@ public class MainFrame extends JFrame {
         }
     }
 
-    /**
-     * Metoda otwiera okno dialogowe umożliwiające użytkownikowi wprowadzenie parametrów koła, który zostanie narysowane na wczytanym obrazie.
-     *
-     * <p>
-     * Tworzy instancję okna dialogowego {@code CircleDialog}, który wyświetla formularz do wprowadzania parametrów koła.
-     * Po utworzeniu instancji okna dialogowego należy pokazać komponent przez wywołanie funkcji {@code dialog.setVisible(true)}
-     * </p>
-     *
-     * @see CircleDialog
-     * @see CircleModel
-     * @see ImageController#drawCircle(CircleModel)
-     */
     private void showFilterDialog(){
         FilterDialog dialog = new FilterDialog(this);
         dialog.setVisible(true);
-        FilterModel filterModel = dialog.getFilterModel();
+//        FilterModel filterModel = dialog.getFilterModel();
 //        System.out.println(filterModel.getName()+" value: "+filterModel.getThershold() );
-        imageController.addFilter(filterModel);
+//        imageController.addFilter(filterModel);
 
        // TODO : Pobrać dane z okna dialogowego i przesłać do imageController
     }
@@ -241,15 +186,7 @@ public class MainFrame extends JFrame {
         imageController.makeGrayByYUV();
     }
 
-    /**
-     * Metoda otwiera okno dialogowe wyboru pliku graficznego.
-     *
-     * <p>Tworzy instancję {@code JFileChooser}, umożliwiając użytkownikowi wybór pliku.
-     * Przekazuje plik do kontrolera {@code ImageController} w celu załadowania zdjęcia do lewego panelu graficznego.</p>
-     *
-     * @see JFileChooser
-     * @see ImageController#loadImage(File)
-     */
+
     private void showFileChooserDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Wybierz plik graficzny");
@@ -261,17 +198,6 @@ public class MainFrame extends JFrame {
         }
     }
 
-    /**
-     * Metoda otwiera okno dialogowe zapisu pliku graficznego.
-     *
-     * <p>
-     * Tworzy instancję {@code JFileChooser}, ustawiając filtr plików obsługujący formaty BMP i PNG.
-     * Po wybraniu miejscu zapisu przekazuje plik do kontrolera {@code FileController} w celu zapisania obrazu z prawego panelu graficznego.
-     * </p>
-     *
-     * @see JFileChooser
-     * @see FileController#saveFile(File)
-     */
     private void showSaveFileDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Zapisz obraz");

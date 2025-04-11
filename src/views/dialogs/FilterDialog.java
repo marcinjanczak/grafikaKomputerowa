@@ -27,15 +27,6 @@ public class FilterDialog extends JDialog{
     }
     private JPanel getMainPanel(){
         var panel = new JPanel(new GridLayout(4,0,10,10));
-        String[] filters = {
-                "blur", "gaussian Blur",
-                "sharpen", "laplace",
-                "medianowy", "maksymalny", "minimalny",
-                "sobel (Poziomy)", "sobel (Pionowy)", "roberts"
-        };
-        filterComboBox = new JComboBox<>(filters);
-        theresholdField = new JTextField("128");
-
 
         panel.add(filterComboBox);
         panel.add(new JLabel(""));
@@ -62,13 +53,13 @@ public class FilterDialog extends JDialog{
         panel.add(cancelButton);
         return panel;
     }
-    public FilterModel getFilterModel(){
-        if(confirmed){
-            return new FilterModel(getSelectedComboBoxText(filterComboBox),
-                    parseField(theresholdField));
-        }
-        return null;
-    }
+//    public FilterModel getFilterModel(){
+//        if(confirmed){
+//            return new FilterModel(getSelectedComboBoxText(filterComboBox),
+//                    parseField(theresholdField));
+//        }
+//        return null;
+//    }
     public static String getSelectedComboBoxText(JComboBox<String> comboBox) {
         if (comboBox == null) {
             throw new IllegalArgumentException("ComboBox nie może być null");
