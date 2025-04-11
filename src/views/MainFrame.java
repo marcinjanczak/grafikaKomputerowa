@@ -3,6 +3,7 @@ package views;
 import controllers.FileController;
 import controllers.ImageController;
 import models.*;
+import views.dialogs.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -191,7 +192,7 @@ public class MainFrame extends JFrame {
         imageController.transformDilataion();
     }
     private void makeCurve(){
-        MakeCurveDialog dialog = new MakeCurveDialog(this);
+        ImagePanel.MakeCurveDialog dialog = new ImagePanel.MakeCurveDialog(this);
         dialog.setVisible(true);
 
     }

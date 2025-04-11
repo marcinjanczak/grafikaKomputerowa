@@ -1,29 +1,34 @@
-package views;
+package views.dialogs;
 
-import models.CircleModel;
+import models.RectangleModel;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Klasa okna dialogowego do wprowadzania parametrów koła.
+ * Klasa okna dialogowego do wprowadzania parametrów prostokąta.
  *
- * <p>Umożliwia użytkownikowi podanie współrzędnych środka, promienia oraz wybór koloru koła.
- * Po zatwierdzeniu danych generowany jest obiekt {@link CircleModel}, w którym przechowywane są informację
- * wykorzystywane do rysowania koła na obrazie.</p>
+ * <p>Umożliwia użytkownikowi podanie współrzędnych, wielkości oraz wybór koloru prostokąta.
+ * Po zatwierdzeniu danych generowany jest obiekt {@link RectangleModel}, w którym przechowywane są informację
+ * wykorzystywane do rysowania prostokąta na obrazie.</p>
  *
- * @see CircleModel
+ * @see RectangleModel
  */
-public class CircleDialog extends JDialog {
+public class RectangleDialog extends JDialog {
 
-    // Pole dla współrzędnej X środka koła (domyślnie przyjmuje wartość 100).
+    // TODO: Zaimplementuj pola tekstowe do wprowadzania współrzędnych i wymiarów prostokąta, zmienną do przechowywania wybranego kolor oraz flagę oznaczającą, czy użytkownik potwierdził dane.
+    // private final JTextField xField = ...;
+    // private final JTextField yField = ...;
+    // private final JTextField widthField = ...;
+    // private final JTextField heightField = ...;
+    // private Color selectedColor = ...;
+    // private boolean confirmed = ...;
     private final JTextField xField = new JTextField("100");
 
-    // Pole dla współrzędnej Y środka koła (domyślnie przyjmuje wartość 100).
     private final JTextField yField = new JTextField("100");
 
-    // Pole tekstowe dla promienia koła (domyślnie przyjmuje wartość 50).
-    private final JTextField radiusField = new JTextField("50");
+    private final JTextField heightField = new JTextField("100");
+    private final JTextField widthField = new JTextField("20");
 
     // Aktualnie wybrany kolor koła (domyślnie niebieski).
     private Color selectedColor = Color.BLUE;
@@ -31,7 +36,8 @@ public class CircleDialog extends JDialog {
     // Flaga informująca, czy użytkownik zatwierdził dane, przez przycisk OK.
     private Boolean confirmed = false;
 
-    public CircleDialog(JFrame parent) {
+    public RectangleDialog(JFrame parent) {
+        // TODO: Zaimplementuj konstruktor, ustawiając tytuł, rozmiar i układ okna dialogowego.
         super(parent, "Podaj parametry", true);
         setSize(300, 200);
         setLocationRelativeTo(parent);
@@ -44,30 +50,24 @@ public class CircleDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    /**
-     * Tworzy główny panel zawierający pola do wprowadzania danych oraz przycisk wyboru koloru.
-     *
-     * @return Panel z polami tekstowymi i przyciskiem do wyboru koloru.
-     */
+
     private JPanel getMainPanel() {
-        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+        // TODO: Utwórz panel i dodaj do niego etykiety oraz pola tekstowe.
+        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         panel.add(new JLabel("Środek X:"));
         panel.add(xField);
         panel.add(new JLabel("Środek Y:"));
         panel.add(yField);
-        panel.add(new JLabel("Promień:"));
-        panel.add(radiusField);
+        panel.add(new JLabel("Wysokość:"));
+        panel.add(heightField);
+        panel.add(new JLabel("Szerokość"));
+        panel.add(widthField);
 
-        // Wybór koloru
         JButton colorButton = new JButton("Wybierz kolor");
         colorButton.setBackground(selectedColor);
 
-        /**
-         *  Ustawnie nasłuchu na przycisk Wybierz kolor.
-         *  Po kliknięciu otwiera okno dialogowe wyboru koloru ({@link JColorChooser}).
-         */
         colorButton.addActionListener(e -> {
             Color newColor = JColorChooser.showDialog(this, "Wybierz kolor", selectedColor);
             if (newColor != null) {
@@ -75,24 +75,19 @@ public class CircleDialog extends JDialog {
                 colorButton.setBackground(selectedColor);
             }
         });
-
         panel.add(new JLabel("Kolor:"));
         panel.add(colorButton);
 
         return panel;
     }
 
-    /**
-     * Tworzy panel z przyciskami akcji: "OK" i "Anuluj".
-     *
-     * @return Panel z przyciskami potwierdzenia i anulowania.
-     */
     private JPanel getActionPanel() {
+        // TODO: Utwórz panel z przyciskami OK i Anuluj.
+        // Przycisk OK powinien sprawdzać poprawność danych i zamykać okno, jeśli są poprawne.
         JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("OK");
         JButton cancelButton = new JButton("Anuluj");
 
-        // Obsługa przycisku OK. Sprawdzenie poprawności danych i zamknięcie okna. Jeśli dane są niepoprawne, wyświetlany jest komunikat z błędem.
         okButton.addActionListener(e -> {
             if (validateFields()) {
                 confirmed = true;
@@ -110,40 +105,28 @@ public class CircleDialog extends JDialog {
         return buttonPanel;
     }
 
-    /**
-     * Zwraca obiekt {@link CircleModel} z wprowadzonymi danymi. Obiekt jest zwracany tylko, gdy użytkownik zatwierdził okno przez przycisk OK.
-     *
-     * @return Obiekt CircleModel z danymi koła lub {@code null}, jeśli użytkownik anulował formularz.
-     */
-    public CircleModel getCircle() {
+    public RectangleModel getRectangle() {
+        // TODO: Jeśli użytkownik potwierdził dane, zwróć nowy obiekt RectangleModel z odpowiednimi wartościami.
         if (confirmed) {
-            return new CircleModel(
+            return new RectangleModel(
                     parseField(xField),
                     parseField(yField),
-                    parseField(radiusField),
+                    parseField(widthField),
+                    parseField(heightField),
                     selectedColor
             );
         }
         return null;
     }
 
-    /**
-     * Sprawdza, czy wszystkie pola zawierają poprawne wartości numeryczne.
-     *
-     * @return {@code true}, jeśli dane są poprawne; {@code false} w przeciwnym razie.
-     */
     private Boolean validateFields() {
+        // TODO: Sprawdź, poprawność danych.
         return parseField(xField) != null &&
                 parseField(yField) != null &&
-                parseField(radiusField) != null;
+                parseField(widthField) != null &&
+                parseField(heightField) != null;
     }
 
-    /**
-     * Konwertuje dane pobrane z pola tekstowego {@link JTextField} na liczbę całkowitą.
-     *
-     * @param field Pole tekstowe do sparsowania.
-     * @return Liczba całkowita lub {@code null}, jeśli nie udało się sparsować wartości.
-     */
     private Integer parseField(JTextField field) {
         try {
             return Integer.parseInt(field.getText());
