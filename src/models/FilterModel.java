@@ -5,37 +5,76 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FilterModel {
     private String name;
     private float[][] martix;
-//    private final List<FilterModel> filterModels;
-
+    private ArrayList<FilterModel> filterList;
 
     public FilterModel(String name, float[][] martix) {
         this.name = name;
         this.martix = martix;
     }
+    public static List<FilterModel> readFiltersFromFile(String filePath) throws IOException {
+        List<FilterModel> filterList = new ArrayList<>();
 
-
-    private void readMatrixFromFile(String filePatch) throws IOException {
-        try(BufferedReader reader = new BufferedReader(new FileReader(filePatch))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            String currentname = null;
-            List<String> matrixLines  = new ArrayList<>();
+            String currentName = null;
+            float[][] currentMatrix = new float[3][3];
+            int row = 0;
 
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                if(line.isEmpty()){
 
+                // Pomijaj puste linie
+                if (line.isEmpty()) {
+                    // Jeśli mamy kompletną macierz, dodaj do listy
+                    if (currentName != null && row == 3) {
+                        filterList.add(new FilterModel(currentName, currentMatrix));
+                        currentName = null;
+                        row = 0;
+                        currentMatrix = new float[3][3];
+                    }
+                    continue;
                 }
 
-            }
-        }catch (FileNotFoundException e){
-            System.err.println("Brak pliku do odczytania: "+e.getMessage());
-        }
-    }
+                // Jeśli nie mamy nazwy, to jest to nowy filtr
+                if (currentName == null) {
+                    currentName = line;
+                }
+                // W przeciwnym razie wczytujemy wiersz macierzy
+                else if (row < 3) {
+                    String[] values = line.split("\\s+");
+                    if (values.length != 3) {
+                        throw new IOException("Nieprawidłowy format wiersza macierzy: " + line);
+                    }
 
+                    for (int col = 0; col < 3; col++) {
+                        currentMatrix[row][col] = Float.parseFloat(values[col]);
+                    }
+                    row++;
+                }
+            }
+
+            // Dodaj ostatni filtr, jeśli plik nie kończy się pustą linią
+            if (currentName != null && row == 3) {
+                filterList.add(new FilterModel(currentName, currentMatrix));
+            }
+
+        } catch (NumberFormatException e) {
+            throw new IOException("Nieprawidłowy format liczby w macierzy", e);
+        }
+
+        return filterList;
+    }
+    public String getName() {
+        return name;
+    }
+    public float[][] getMartix() {
+        return martix;
+    }
 
 }

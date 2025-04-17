@@ -149,8 +149,8 @@ public class ImageController {
         var image = leftPanel.getModel().getCopyImage();
         var model = new ImageModel(image);
 
-        var filterMatrix = getFilterMatrix(filterModel.getName());
-        System.out.println(filterModel.getName());
+    //    var filterMatrix = getFilterMatrix(filterModel.getName());
+     //   System.out.println(filterModel.getName());
 
 //        model.addFilter(filterMatrix);
 
