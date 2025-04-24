@@ -3,6 +3,7 @@ package models;
 import models.imageOperations.DilataionOperations;
 import models.imageOperations.PointFilterOperations;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -157,12 +158,23 @@ public class ImageModel {
     }
     public void setStatisticFilter(String name){
       if(image != null) {
-//          var imageArray = getPixelArrayFromImage(image);
+          var imageArray = getPixelArrayFromImage(image);
+
+          switch (name){
+              case "medianowy":
+                  imageArray = createImageArrayWithMedianStatFilter(imageArray);
+                  break;
+              case "minimalny":
+                  imageArray = createImageArrayWithMinimumStatFilter(imageArray);
+                  break;
+              case "maksymalny":
+                  imageArray = createImageArrayWithMaximumStatFilter(imageArray);
+                  break;
+          }
           System.out.println(name);
-//          image = createImageFromPixelArray(imageArray);
+          image = createImageFromPixelArray(imageArray);
       }
     }
-
     public void setSplitFilter(SplitFilterModel splitFilterModel){
         if(image != null){
             var imageArray = getPixelArrayFromImage(image);
@@ -171,6 +183,69 @@ public class ImageModel {
             image = createImageFromPixelArray(imageArray);
         }
     }
+    private Pixel[][] createImageArrayWithMedianStatFilter(Pixel[][] imageArray){
+        int width = imageArray.length;       // Pierwszy wymiar to szerokość (x)
+        int height = imageArray[0].length;   // Drugi wymiar to wysokość (y)
+
+        Pixel[][] newPixelArray = new Pixel[width][height];
+
+
+
+
+        return newPixelArray;
+    }
+    private Pixel[][] createImageArrayWithMinimumStatFilter(Pixel[][] imageArray){
+        int width = imageArray.length;       // Pierwszy wymiar to szerokość (x)
+        int height = imageArray[0].length;   // Drugi wymiar to wysokość (y)
+
+        Pixel[][] newPixelArray = new Pixel[width][height];
+
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                int minR = 255, minG = 255, minB = 255;
+
+                for (int fy = -1; fy <= 1; fy++) {
+                    for (int fx = -1; fx <= 1; fx++) {
+                        Pixel p = imageArray[x + fx][y + fy];
+                        minR = Math.min(minR, p.getRedPixel());
+                        minG = Math.min(minG, p.getGreenPixel());
+                        minB = Math.min(minB, p.getBluePixel());
+                    }
+                }
+
+                newPixelArray[x][y] = new Pixel(minR, minG, minB);
+            }
+        }
+        copyBorders(imageArray,newPixelArray);
+        return newPixelArray;
+    }
+    private Pixel[][] createImageArrayWithMaximumStatFilter(Pixel[][] imageArray){
+        int width = imageArray.length;       // Pierwszy wymiar to szerokość (x)
+        int height = imageArray[0].length;   // Drugi wymiar to wysokość (y)
+
+        Pixel[][] newPixelArray = new Pixel[width][height];
+
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                int maxR = 0, maxG = 0, maxB = 0;
+
+                for (int fy = -1; fy <= 1; fy++) {
+                    for (int fx = -1; fx <= 1; fx++) {
+                        Pixel p = imageArray[x + fx][y + fy];
+                        maxR = Math.max(maxR, p.getRedPixel());
+                        maxG = Math.max(maxG, p.getGreenPixel());
+                        maxB = Math.max(maxB, p.getBluePixel());
+                    }
+                }
+
+                newPixelArray[x][y] = new Pixel(maxR, maxG, maxB);
+            }
+        }
+        copyBorders(imageArray,newPixelArray);
+        return newPixelArray;
+    }
+
+
 
     private Pixel[][] createImageArrayWithFilter(Pixel[][] imageArray, float[][] filterMatrix) {
         int width = imageArray.length;       // Pierwszy wymiar to szerokość (x)
