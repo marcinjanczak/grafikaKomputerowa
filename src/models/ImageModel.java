@@ -6,6 +6,8 @@ import models.imageOperations.PointFilterOperations;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ImageModel {
 
@@ -189,9 +191,30 @@ public class ImageModel {
 
         Pixel[][] newPixelArray = new Pixel[width][height];
 
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                ArrayList<Integer> reds = new ArrayList<>();
+                ArrayList<Integer> greens = new ArrayList<>();
+                ArrayList<Integer> blues = new ArrayList<>();
 
+                for (int fy = -1; fy <= 1; fy++) {
+                    for (int fx = -1; fx <= 1; fx++) {
+                        Pixel p = imageArray[x + fx][y + fy];
+                        reds.add(p.getRedPixel());
+                        greens.add(p.getGreenPixel());
+                        blues.add(p.getBluePixel());
+                    }
+                }
 
+                Collections.sort(reds);
+                Collections.sort(greens);
+                Collections.sort(blues);
 
+                int mid = reds.size() / 2;
+                newPixelArray[x][y] = new Pixel(reds.get(mid), greens.get(mid), blues.get(mid));
+            }
+        }
+        copyBorders(imageArray, newPixelArray);
         return newPixelArray;
     }
     private Pixel[][] createImageArrayWithMinimumStatFilter(Pixel[][] imageArray){
