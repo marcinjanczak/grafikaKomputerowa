@@ -154,6 +154,11 @@ public class MainFrame extends JFrame {
     private void showGradientFilterDialog(){
         GradientFilterDialog dialog = new GradientFilterDialog(this);
         dialog.setVisible(true);
+        GradientModel gradientModel = dialog.getGradientModel();
+
+        if( gradientModel != null){
+            imageController.addGradientFilter(gradientModel);
+        }
 
     }
 

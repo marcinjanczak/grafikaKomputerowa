@@ -57,4 +57,5 @@ public class StatisticFilterDialog extends JDialog {
         }
         return null;
     }
+
 }

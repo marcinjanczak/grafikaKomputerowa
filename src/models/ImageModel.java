@@ -117,7 +117,6 @@ public class ImageModel {
     public void trGrayByYUV(){
         if(image != null){
             var imageArray = getPixelArrayFromImage(image);
-
             imageArray = DilataionOperations.createGrayByYUV(imageArray);
             image = createImageFromPixelArray(imageArray);
         }
@@ -158,6 +157,172 @@ public class ImageModel {
             image = createImageFromPixelArray(imageArray);
         }
     }
+    public void setGradientFilter(GradientModel gradientModel) {
+        if (image != null) {
+            var imageArray = getPixelArrayFromImage(image);
+            imageArray = getPixelArrayFromImage(image);
+
+            switch (gradientModel.getName()) {
+                case "prosty":
+                    imageArray = createImageArraySimpleGradient(imageArray);
+                    break;
+                case "roberts":
+                    imageArray = createImageArrayRobertsGradient(imageArray);
+                case "progowy":
+                    imageArray = createImageArrayThresholdGradient(imageArray, gradientModel);
+            }
+            System.out.println(gradientModel.getName());
+            image = createImageFromPixelArray(imageArray);
+        }
+
+    }
+    private Pixel[][] createImageArraySimpleGradient(Pixel[][] imageArray){
+        int width = imageArray.length;
+        int height = imageArray[0].length;
+
+        Pixel[][] newPixelArray = new Pixel[width][height];
+
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                // Oblicz gradient w poziomie (Gx) - różnica między prawym a lewym pikselem
+                Pixel left = imageArray[x-1][y];
+                Pixel right = imageArray[x+1][y];
+                int gxRed = right.getRedPixel() - left.getRedPixel();
+                int gxGreen = right.getGreenPixel() - left.getGreenPixel();
+                int gxBlue = right.getBluePixel() - left.getBluePixel();
+
+                // Oblicz gradient w pionie (Gy) - różnica między dolnym a górnym pikselem
+                Pixel top = imageArray[x][y-1];
+                Pixel bottom = imageArray[x][y+1];
+                int gyRed = bottom.getRedPixel() - top.getRedPixel();
+                int gyGreen = bottom.getGreenPixel() - top.getGreenPixel();
+                int gyBlue = bottom.getBluePixel() - top.getBluePixel();
+
+                // Oblicz moduł gradientu dla każdego kanału
+                int gradientRed = (int) Math.sqrt(gxRed * gxRed + gyRed * gyRed);
+                int gradientGreen = (int) Math.sqrt(gxGreen * gxGreen + gyGreen * gyGreen);
+                int gradientBlue = (int) Math.sqrt(gxBlue * gxBlue + gyBlue * gyBlue);
+
+                // Przycięcie wartości do zakresu 0-255
+                newPixelArray[x][y] = new Pixel(
+                        clamp(gradientRed),
+                        clamp(gradientGreen),
+                        clamp(gradientBlue)
+                );
+            }
+        }
+
+        fillBorders(newPixelArray);
+        return newPixelArray;
+    }
+    private void fillBorders(Pixel[][] image) {
+        int width = image.length;
+        int height = image[0].length;
+        Pixel black = new Pixel(0, 0, 0);
+
+        for (int x = 0; x < width; x++) {
+            image[x][0] = black;
+            image[x][height-1] = black;
+        }
+        for (int y = 0; y < height; y++) {
+            image[0][y] = black;
+            image[width-1][y] = black;
+        }
+    }
+    private Pixel[][] createImageArrayRobertsGradient(Pixel[][] imageArray){
+        int width = imageArray.length;
+        int height = imageArray[0].length;
+
+        Pixel[][] newPixelArray = new Pixel[width][height];
+
+        for (int y = 0; y < height - 1; y++) {
+            for (int x = 0; x < width - 1; x++) {
+                // Pobierz 4 piksele w układzie 2x2
+                Pixel current = imageArray[x][y];
+                Pixel right = imageArray[x+1][y];
+                Pixel bottom = imageArray[x][y+1];
+                Pixel bottomRight = imageArray[x+1][y+1];
+
+                // Oblicz gradient Robertsa (G1 i G2) dla każdego kanału
+                // G1 = bottomRight - current (przekątna główna)
+                int g1Red = bottomRight.getRedPixel() - current.getRedPixel();
+                int g1Green = bottomRight.getGreenPixel() - current.getGreenPixel();
+                int g1Blue = bottomRight.getBluePixel() - current.getBluePixel();
+
+                // G2 = bottom - right (przekątna antygłówna)
+                int g2Red = bottom.getRedPixel() - right.getRedPixel();
+                int g2Green = bottom.getGreenPixel() - right.getGreenPixel();
+                int g2Blue = bottom.getBluePixel() - right.getBluePixel();
+
+                // Oblicz moduł gradientu dla każdego kanału
+                int gradientRed = (int) Math.sqrt(g1Red * g1Red + g2Red * g2Red);
+                int gradientGreen = (int) Math.sqrt(g1Green * g1Green + g2Green * g2Green);
+                int gradientBlue = (int) Math.sqrt(g1Blue * g1Blue + g2Blue * g2Blue);
+
+                newPixelArray[x][y] = new Pixel(
+                        clamp(gradientRed),
+                        clamp(gradientGreen),
+                        clamp(gradientBlue)
+                );
+            }
+        }
+
+        fillRobertsBorders(newPixelArray);
+        return newPixelArray;
+    }
+    private void fillRobertsBorders(Pixel[][] image) {
+        int width = image.length;
+        int height = image[0].length;
+        Pixel black = new Pixel(0, 0, 0);
+
+        // Ostatnia kolumna
+        for (int y = 0; y < height; y++) {
+            image[width-1][y] = black;
+        }
+        // Ostatni wiersz
+        for (int x = 0; x < width; x++) {
+            image[x][height-1] = black;
+        }
+    }
+
+    private Pixel[][] createImageArrayThresholdGradient(Pixel[][] imageArray, GradientModel gradientModel){
+        imageArray = createImageArraySimpleGradient(imageArray);
+        int mode = gradientModel.getMode();
+        int threshold = gradientModel.getThershold();
+
+
+        int width = imageArray.length;
+        int height = imageArray[0].length;
+        Pixel[][] result = new Pixel[width][height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Pixel pixel = imageArray[x][y];
+
+                // Oblicz średnią wartość gradientu (dla uproszczenia używamy średniej z RGB)
+                int gradientValue = (pixel.getRedPixel() + pixel.getGreenPixel() + pixel.getBluePixel()) / 3;
+
+                switch (mode) {
+                    case 1: // Wariant 1: Tło białe, reszta obrazu nieprzetworzona
+                        result[x][y] = (gradientValue >= threshold) ? pixel : new Pixel(255, 255, 255);
+                        break;
+
+                    case 2: // Wariant 2: Krawędzie czarne, tło oryginalne
+                        result[x][y] = (gradientValue >= threshold) ? new Pixel(0, 0, 0) : pixel;
+                        break;
+
+                    case 3: // Wariant 3: Czarne krawędzie na białym tle
+                        result[x][y] = (gradientValue >= threshold) ? new Pixel(0, 0, 0) : new Pixel(255, 255, 255);
+                        break;
+
+                    default:
+                        result[x][y] = pixel;
+                }
+            }
+        }
+        return result;
+    }
+
     public void setStatisticFilter(String name){
       if(image != null) {
           var imageArray = getPixelArrayFromImage(image);
