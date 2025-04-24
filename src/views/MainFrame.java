@@ -8,8 +8,6 @@ import views.dialogs.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 public class MainFrame extends JFrame {
@@ -109,7 +107,9 @@ public class MainFrame extends JFrame {
         menuBar.getMakeByBlueGrey().addActionListener(e -> makeGrayByBlue());
         menuBar.getMakeByYUV().addActionListener(e -> makeByYUV());
 
-        menuBar.getChoseFilter().addActionListener(e -> showFilterDialog());
+        menuBar.getSplotFilter().addActionListener(e -> showSplotFilterDialog());
+        menuBar.getStatisticFilter().addActionListener(e -> showStatisticFilterDialog());
+        menuBar.getGradientFilter().addActionListener(e -> showGradientFilterDialog());
 
         menuBar.getMakeCurve().addActionListener(e-> makeCurve());
 
@@ -124,8 +124,8 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void showFilterDialog(){
-        FilterDialog dialog = new FilterDialog(this);
+    private void showSplotFilterDialog(){
+        SplotFilterDialog dialog = new SplotFilterDialog(this);
         dialog.setVisible(true);
 //        FilterModel filterModel = dialog.getFilterModel();
 //        System.out.println(filterModel.getName()+" value: "+filterModel.getThershold() );
@@ -133,6 +133,20 @@ public class MainFrame extends JFrame {
 
        // TODO : Pobrać dane z okna dialogowego i przesłać do imageController
     }
+    private void showStatisticFilterDialog(){
+        StatisticFilterDialog dialog = new StatisticFilterDialog(this);
+        dialog.setVisible(true);
+
+    }
+    private void showGradientFilterDialog(){
+        GradientFilterDialog dialog = new GradientFilterDialog(this);
+        dialog.setVisible(true);
+
+    }
+
+
+
+
     private void transformDilataionPicture(){
         imageController.transformDilataion();
     }

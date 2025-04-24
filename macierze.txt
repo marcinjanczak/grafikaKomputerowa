@@ -1,4 +1,14 @@
-gradient
+dwasdgradient
+1 1 1
+2 3 4
+1 2 3
+
+Dupa jebana
+0.25 1 1
+2 0.5 4
+1 2 34.5
+
+dwasdgradient
 1 1 1
 2 3 4
 1 2 3

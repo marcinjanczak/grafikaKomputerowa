@@ -41,7 +41,9 @@ public class MenuBar extends JMenuBar {
     private final JMenuItem makeByBlueGrey;
     private final JMenuItem makeByYUV;
 
-    private final JMenuItem choseFilter;
+    private final JMenuItem statisticFilter;
+    private final JMenuItem splotFilter;
+    private final JMenuItem gradientFilter;
 
     private final JMenuItem makeCurve;
 
@@ -82,13 +84,18 @@ public class MenuBar extends JMenuBar {
         transformNegative = new JMenuItem("Zrób Negatyw");
         transformNormalizeBrightness = new JMenuItem("Normalizuj jasność");
 
+        // Filtry Szarości
         makegrByAyaverageGray = new JMenuItem("Poszarz według sredniej");
         makeByRedGray = new JMenuItem("Według czerwonego");
         makeByGreenGray = new JMenuItem("Według zielonego");
         makeByBlueGrey = new JMenuItem("Według niebieskiego");
         makeByYUV = new JMenuItem("Według YUV");
 
-        choseFilter = new JMenuItem("Wybierz filter");
+
+        // Elementy filtrów
+        statisticFilter = new JMenuItem("Filtr statystyczne");
+        splotFilter = new JMenuItem("Filtry splotowe");
+        gradientFilter = new JMenuItem("Filtry gradientowe");
 
         makeCurve = new JMenuItem("Wyznacz krzywą");
 
@@ -125,7 +132,9 @@ public class MenuBar extends JMenuBar {
         dilatationsPanelMenu.add(makeByYUV);
 
         // Dodawanie elementów filtrów
-        filtersPanelManu.add(choseFilter);
+        filtersPanelManu.add(statisticFilter);
+        filtersPanelManu.add(splotFilter);
+        filtersPanelManu.add(gradientFilter);
 
 
 //        curvePanelMenu.add(makeCurve);
@@ -227,7 +236,15 @@ public class MenuBar extends JMenuBar {
     ///
     /// Gettery dla wybierania filtrów wielopunktowych
     ///
-    public JMenuItem getChoseFilter() {
-        return choseFilter;
+    public JMenuItem getStatisticFilter() {
+        return statisticFilter;
+    }
+
+    public JMenuItem getSplotFilter() {
+        return splotFilter;
+    }
+
+    public JMenuItem getGradientFilter() {
+        return gradientFilter;
     }
 }
