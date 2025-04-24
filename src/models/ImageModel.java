@@ -163,13 +163,15 @@ public class ImageModel {
             imageArray = getPixelArrayFromImage(image);
 
             switch (gradientModel.getName()) {
-                case "prosty":
+                case "filtr prosty":
                     imageArray = createImageArraySimpleGradient(imageArray);
                     break;
-                case "roberts":
+                case "filtr roberts":
                     imageArray = createImageArrayRobertsGradient(imageArray);
-                case "progowy":
+                    break;
+                case "filtr progowy":
                     imageArray = createImageArrayThresholdGradient(imageArray, gradientModel);
+                    break;
             }
             System.out.println(gradientModel.getName());
             image = createImageFromPixelArray(imageArray);
@@ -259,6 +261,8 @@ public class ImageModel {
                 int gradientGreen = (int) Math.sqrt(g1Green * g1Green + g2Green * g2Green);
                 int gradientBlue = (int) Math.sqrt(g1Blue * g1Blue + g2Blue * g2Blue);
 
+
+
                 newPixelArray[x][y] = new Pixel(
                         clamp(gradientRed),
                         clamp(gradientGreen),
@@ -287,7 +291,7 @@ public class ImageModel {
 
     private Pixel[][] createImageArrayThresholdGradient(Pixel[][] imageArray, GradientModel gradientModel){
         imageArray = createImageArraySimpleGradient(imageArray);
-        int mode = gradientModel.getMode();
+        String mode = gradientModel.getMode();
         int threshold = gradientModel.getThershold();
 
 
@@ -303,18 +307,17 @@ public class ImageModel {
                 int gradientValue = (pixel.getRedPixel() + pixel.getGreenPixel() + pixel.getBluePixel()) / 3;
 
                 switch (mode) {
-                    case 1: // Wariant 1: Tło białe, reszta obrazu nieprzetworzona
+                    case "Białe tło, resszta niepretworzona":
                         result[x][y] = (gradientValue >= threshold) ? pixel : new Pixel(255, 255, 255);
                         break;
 
-                    case 2: // Wariant 2: Krawędzie czarne, tło oryginalne
+                    case "Krawędzie czarne, tło oryginalne": // Wariant 2: Krawędzie czarne, tło oryginalne
                         result[x][y] = (gradientValue >= threshold) ? new Pixel(0, 0, 0) : pixel;
                         break;
 
-                    case 3: // Wariant 3: Czarne krawędzie na białym tle
+                    case "Czarne krawędzie na czarnym tle": // Wariant 3: Czarne krawędzie na białym tle
                         result[x][y] = (gradientValue >= threshold) ? new Pixel(0, 0, 0) : new Pixel(255, 255, 255);
                         break;
-
                     default:
                         result[x][y] = pixel;
                 }

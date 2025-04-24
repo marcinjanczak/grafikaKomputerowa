@@ -10,7 +10,6 @@ public class GradientFilterDialog extends JDialog {
     private JTextField thersholdField;
     private JComboBox<String> modeChoseComboBox;
 
-
     private JButton applyButton;
     private JButton cancelButton;
     private Boolean confirmed = false;
@@ -29,9 +28,10 @@ public class GradientFilterDialog extends JDialog {
     private JPanel getMainPanel(){
         var panel = new JPanel(new GridLayout(5,0,10,10));
         gradientComboBox = new JComboBox<>(new String[]{
-                "prosty",
-                "roberts",
-                "progowy"});
+                "filtr prosty",
+                "filtr roberts",
+                "filtr progowy"
+        });
 
         modeChoseComboBox = new JComboBox<>(new String[]{
                 "Białe tło, resszta niepretworzona",
@@ -71,7 +71,7 @@ public class GradientFilterDialog extends JDialog {
             return new GradientModel(
                     (String) gradientComboBox.getSelectedItem(),
                     value,
-                    getMode()
+                    (String) modeChoseComboBox.getSelectedItem()
             );
         }
         return null;
@@ -86,23 +86,7 @@ public class GradientFilterDialog extends JDialog {
             return null;
         }
     }
-    private Integer getMode(){
-        Integer mode;
-        String modeName = (String) modeChoseComboBox.getSelectedItem();
-        switch (modeName){
-            case"Białe tło, resszta niepretworzona":
-                mode = 1;
-                break;
-            case"Krawędzie czarne, tło oryginalne":
-                mode = 2;
-                break;
-            case"Czarne krawędzie na czarnym tle":
-                mode = 3;
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + modeName);
-        }
-        return mode;
-    }
+
+
 
 }

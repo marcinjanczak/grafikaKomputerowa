@@ -5,8 +5,8 @@ import javax.swing.*;
 public class GradientModel {
     private String name;
     private int thershold;
-    private int mode;
-    public GradientModel(String name, int thershold, int mode){
+    private String mode;
+    public GradientModel(String name, int thershold,String mode){
         this.name = name;
         this.thershold = thershold;
         this.mode = mode;
@@ -18,7 +18,7 @@ public class GradientModel {
         return thershold;
     }
 
-    public int getMode() {
+    public String getMode() {
         return mode;
     }
 }
