@@ -156,18 +156,70 @@ public class ImageModel {
         }
     }
 
-    private Pixel[][] setSpllitFilter(SplitFilterModel splitFilterModel,Pixel[][] pixeelArray){
+    public void setSplitFilter(SplitFilterModel splitFilterModel){
+        if(image != null){
+            var imageArray = getPixelArrayFromImage(image);
+            imageArray = createImageArrayWithFilter(imageArray, splitFilterModel.getMartix());
 
-        return null;
+            image = createImageFromPixelArray(imageArray);
+        }
+    }
+
+    private Pixel[][] createImageArrayWithFilter(Pixel[][] imageArray, float[][] filterMatrix) {
+        int width = imageArray.length;       // Pierwszy wymiar to szerokość (x)
+        int height = imageArray[0].length;   // Drugi wymiar to wysokość (y)
+
+        Pixel[][] newPixelArray = new Pixel[width][height];
+
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                float sumR = 0, sumG = 0, sumB = 0;
+
+                for (int fy = 0; fy < 3; fy++) {
+                    for (int fx = 0; fx < 3; fx++) {
+                        int imageX = x + fx - 1;
+                        int imageY = y + fy - 1;
+
+                        Pixel neighbor = imageArray[imageX][imageY];  // UWAGA: imageX przed imageY!
+                        float weight = filterMatrix[fy][fx];
+
+                        sumR += neighbor.getRedPixel() * weight;
+                        sumG += neighbor.getGreenPixel() * weight;
+                        sumB += neighbor.getBluePixel() * weight;
+                    }
+                }
+
+                newPixelArray[x][y] = new Pixel(
+                        clamp((int) sumR),
+                        clamp((int) sumG),
+                        clamp((int) sumB)
+                );
+            }
+        }
+
+        copyBorders(imageArray, newPixelArray);
+        return newPixelArray;
     }
 
 
 
 
+    private int clamp(int value) {
+        return Math.max(0, Math.min(255, value));
+    }
+    private void copyBorders(Pixel[][] source, Pixel[][] destination) {
+        int width = source.length;
+        int height = source[0].length;
 
-
-
-
+        // Kopiowanie wszystkich pikseli brzegowych
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (x == 0 || x == width-1 || y == 0 || y == height-1) {
+                    destination[x][y] = source[x][y];
+                }
+            }
+        }
+    }
 
     ///
     ///     Pobiera obraz oraz zwraca go w dwuwumiarowej tabeli Pixeli

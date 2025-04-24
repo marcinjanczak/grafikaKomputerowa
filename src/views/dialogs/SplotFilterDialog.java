@@ -24,9 +24,6 @@ public class SplotFilterDialog extends JDialog{
         add(panel,BorderLayout.CENTER);
         JPanel buttonPanel = getButtonPanel();
         add(buttonPanel,BorderLayout.SOUTH);
-
-
-
     }
     private JPanel getMainPanel() throws IOException {
         var panel = new JPanel(new GridLayout(2,0,10,10));
@@ -62,8 +59,7 @@ public class SplotFilterDialog extends JDialog{
     public SplitFilterModel getSplitFilter(){
         if(confirmed){
             String selectedFilter = (String) filterComboBox.getSelectedItem();
-//            System.out.println(selectedFilter);
-            float[][] matrix = new float[3][3];
+            float[][] matrix ;
             matrix = modelArrayList.stream()
                     .filter(modelArrayList -> modelArrayList.getName().equals(selectedFilter))
                     .map(SplitFilterModel::getMartix)

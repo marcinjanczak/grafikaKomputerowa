@@ -134,13 +134,11 @@ public class MainFrame extends JFrame {
     private void showSplotFilterDialog() throws IOException {
         SplotFilterDialog dialog = new SplotFilterDialog(this);
         dialog.setVisible(true);
-        SplitFilterModel model = dialog.getSplitFilter();
-        System.out.println(model.getMartix());
+        SplitFilterModel splitFilterModel = dialog.getSplitFilter();
 
-//        imageController.
-//        SplitFilterModel filterModel = dialog.getFilterModel();
-//        System.out.println(filterModel.getName()+" value: "+filterModel.getThershold() );
-//        imageController.addFilter(filterModel);
+        if(splitFilterModel != null){
+            imageController.addSplitFilter(splitFilterModel);
+        }
 
        // TODO : Pobrać dane z okna dialogowego i przesłać do imageController
     }
@@ -154,9 +152,6 @@ public class MainFrame extends JFrame {
         dialog.setVisible(true);
 
     }
-
-
-
 
     private void transformDilataionPicture(){
         imageController.transformDilataion();
@@ -210,8 +205,6 @@ public class MainFrame extends JFrame {
     private void makeByYUV(){
         imageController.makeGrayByYUV();
     }
-
-
     private void showFileChooserDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Wybierz plik graficzny");
@@ -222,7 +215,6 @@ public class MainFrame extends JFrame {
             imageController.loadImage(file);
         }
     }
-
     private void showSaveFileDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Zapisz obraz");
@@ -234,5 +226,4 @@ public class MainFrame extends JFrame {
             fileController.saveFile(file);
         }
     }
-
 }

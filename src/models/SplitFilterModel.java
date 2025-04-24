@@ -57,15 +57,12 @@ public class SplitFilterModel {
                 }
             }
 
-            // Dodaj ostatni filtr, jeśli plik nie kończy się pustą linią
             if (currentName != null && row == 3) {
                 filterList.add(new SplitFilterModel(currentName, currentMatrix));
             }
-
         } catch (NumberFormatException e) {
             throw new IOException("Nieprawidłowy format liczby w macierzy", e);
         }
-
         return filterList;
     }
     public String getName() {
