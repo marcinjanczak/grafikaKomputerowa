@@ -154,6 +154,20 @@ public class ImageController {
         rightPanel.setModel(model);
         rightPanel.repaint();
     }
+    public void addStatisticFilter(String filterName){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadownego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        var image = leftPanel.getModel().getCopyImage();
+        var model = new ImageModel(image);
+
+        model.setStatisticFilter(filterName);
+
+        rightPanel.setModel(model);
+        rightPanel.repaint();
+    }
 
     public void drawline(LineModel line){
         if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){

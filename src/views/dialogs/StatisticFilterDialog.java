@@ -15,7 +15,7 @@ public class StatisticFilterDialog extends JDialog {
 
     public StatisticFilterDialog(JFrame parent) {
         super(parent,"Podaj parametry:", true);
-        setSize(400,300);
+        setSize(300,100);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(20,20));
 
@@ -26,10 +26,9 @@ public class StatisticFilterDialog extends JDialog {
 
     }
     private JPanel getMainPanel(){
-        var panel = new JPanel(new GridLayout(2,0,10,10));
-
-//        panel.add(filterComboBox);
-        panel.add(new JLabel("Dodaj zakres (0-255)"));
+        var panel = new JPanel(new GridLayout(1,0,10,10));
+        filterComboBox = getFilterComboBox();
+        panel.add(filterComboBox);
         return panel;
     }
     private JPanel getButtonPanel(){
@@ -47,17 +46,15 @@ public class StatisticFilterDialog extends JDialog {
         panel.add(cancelButton);
         return panel;
     }
-    private JComboBox<String> getFilterComboBox() throws IOException {
-        var comboBox = new JComboBox<String>();
-        JComboBox<String> filJComboBox = new JComboBox<>();
-
-
-
-        /// TODO: zaimplementować dodanie nazw i tablic do tego czaru.
-
-        ArrayList<SplitFilterModel> modelArrayList = (ArrayList<SplitFilterModel>) SplitFilterModel.readFiltersFromFile("macierze.txt");
-
-        return comboBox;
+    private JComboBox<String> getFilterComboBox(){
+         filterComboBox = new JComboBox<>(new String[]{"medianowy","minimalny","maksymalny"});
+        return filterComboBox;
     }
-
+    public String getStatisticFilterName(){
+        if(confirmed){
+            String name = (String) filterComboBox.getSelectedItem();
+            return name;
+        }
+        return null;
+    }
 }

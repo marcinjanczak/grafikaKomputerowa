@@ -16,7 +16,7 @@ public class SplotFilterDialog extends JDialog{
 
     public SplotFilterDialog(JFrame parent) throws IOException {
         super(parent,"Podaj parametry:", true);
-        setSize(400,300);
+        setSize(300,100);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(20,20));
 
@@ -26,7 +26,7 @@ public class SplotFilterDialog extends JDialog{
         add(buttonPanel,BorderLayout.SOUTH);
     }
     private JPanel getMainPanel() throws IOException {
-        var panel = new JPanel(new GridLayout(2,0,10,10));
+        var panel = new JPanel(new GridLayout(1,0,10,10));
        filterComboBox = getFilterComboBox();
        panel.add(filterComboBox);
         return panel;

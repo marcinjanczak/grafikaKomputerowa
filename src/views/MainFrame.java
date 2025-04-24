@@ -139,12 +139,16 @@ public class MainFrame extends JFrame {
         if(splitFilterModel != null){
             imageController.addSplitFilter(splitFilterModel);
         }
-
-       // TODO : Pobrać dane z okna dialogowego i przesłać do imageController
     }
+
     private void showStatisticFilterDialog(){
         StatisticFilterDialog dialog = new StatisticFilterDialog(this);
         dialog.setVisible(true);
+        String statisticFilterName = dialog.getStatisticFilterName();
+
+        if(statisticFilterName != null){
+            imageController.addStatisticFilter(statisticFilterName);;
+        }
 
     }
     private void showGradientFilterDialog(){

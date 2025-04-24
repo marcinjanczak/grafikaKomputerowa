@@ -155,6 +155,13 @@ public class ImageModel {
             image = createImageFromPixelArray(imageArray);
         }
     }
+    public void setStatisticFilter(String name){
+      if(image != null) {
+//          var imageArray = getPixelArrayFromImage(image);
+          System.out.println(name);
+//          image = createImageFromPixelArray(imageArray);
+      }
+    }
 
     public void setSplitFilter(SplitFilterModel splitFilterModel){
         if(image != null){
@@ -200,9 +207,6 @@ public class ImageModel {
         copyBorders(imageArray, newPixelArray);
         return newPixelArray;
     }
-
-
-
 
     private int clamp(int value) {
         return Math.max(0, Math.min(255, value));
