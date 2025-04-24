@@ -156,6 +156,19 @@ public class ImageModel {
         }
     }
 
+    private Pixel[][] setSpllitFilter(SplitFilterModel splitFilterModel,Pixel[][] pixeelArray){
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
     ///
     ///     Pobiera obraz oraz zwraca go w dwuwumiarowej tabeli Pixeli
     ///

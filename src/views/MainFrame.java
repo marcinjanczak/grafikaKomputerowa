@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public class MainFrame extends JFrame {
 
@@ -107,7 +108,13 @@ public class MainFrame extends JFrame {
         menuBar.getMakeByBlueGrey().addActionListener(e -> makeGrayByBlue());
         menuBar.getMakeByYUV().addActionListener(e -> makeByYUV());
 
-        menuBar.getSplotFilter().addActionListener(e -> showSplotFilterDialog());
+        menuBar.getSplotFilter().addActionListener(e -> {
+            try {
+                showSplotFilterDialog();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         menuBar.getStatisticFilter().addActionListener(e -> showStatisticFilterDialog());
         menuBar.getGradientFilter().addActionListener(e -> showGradientFilterDialog());
 
@@ -124,10 +131,14 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void showSplotFilterDialog(){
+    private void showSplotFilterDialog() throws IOException {
         SplotFilterDialog dialog = new SplotFilterDialog(this);
         dialog.setVisible(true);
-//        FilterModel filterModel = dialog.getFilterModel();
+        SplitFilterModel model = dialog.getSplitFilter();
+        System.out.println(model.getMartix());
+
+//        imageController.
+//        SplitFilterModel filterModel = dialog.getFilterModel();
 //        System.out.println(filterModel.getName()+" value: "+filterModel.getThershold() );
 //        imageController.addFilter(filterModel);
 

@@ -140,7 +140,7 @@ public class ImageController {
         rightPanel.repaint(); // Ponownie
     }
 
-    public void addFilter(FilterModel filterModel){
+    public void addFilter(SplitFilterModel filterModel){
         if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
             JOptionPane.showMessageDialog(mainFrame, "Brak załadownego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
             return;
@@ -149,74 +149,74 @@ public class ImageController {
         var image = leftPanel.getModel().getCopyImage();
         var model = new ImageModel(image);
 
-    //    var filterMatrix = getFilterMatrix(filterModel.getName());
-     //   System.out.println(filterModel.getName());
-
+//        var filterMatrix = getFilterMatrix(filterModel.getName());
+//        System.out.println(filterModel.getName());
+//
 //        model.addFilter(filterMatrix);
 
         rightPanel.setModel(model);
         rightPanel.repaint();
     }
-    private float[][] getFilterMatrix(String filterName) {
-        if (filterName == null) {
-            throw new IllegalArgumentException("Nazwa filtra nie może być null");
-        }
-
-        return switch (filterName.toLowerCase()) {
-            // Filtry wygładzające
-            case "blur", "rozmycie" -> new float[][] {
-                    {1/9f, 1/9f, 1/9f},
-                    {1/9f, 1/9f, 1/9f},
-                    {1/9f, 1/9f, 1/9f}
-            };
-
-            case "gaussian blur", "gauss" -> new float[][] {
-                    {1/16f, 2/16f, 1/16f},
-                    {2/16f, 4/16f, 2/16f},
-                    {1/16f, 2/16f, 1/16f}
-            };
-
-            // Filtry wyostrzające
-            case "sharpen", "wyostrz" -> new float[][] {
-                    {0, -1, 0},
-                    {-1, 5, -1},
-                    {0, -1, 0}
-            };
-
-            case "laplace", "krawędzie" -> new float[][] {
-                    {-1, -1, -1},
-                    {-1, 8, -1},
-                    {-1, -1, -1}
-            };
-
-            // Detektory krawędzi
-            case "sobel poziomy", "sobel h" -> new float[][] {
-                    {-1, 0, 1},
-                    {-2, 0, 2},
-                    {-1, 0, 1}
-            };
-
-            case "sobel pionowy", "sobel v" -> new float[][] {
-                    {-1, -2, -1},
-                    {0, 0, 0},
-                    {1, 2, 1}
-            };
-
-            case "roberts" -> new float[][] {
-                    {0, 0, 0},
-                    {0, 1, 0},
-                    {0, 0, -1}
-            };
-
-            case "emboss", "płaskorzeźba" -> new float[][] {
-                    {-2, -1, 0},
-                    {-1, 1, 1},
-                    {0, 1, 2}
-            };
-
-            default -> null;
-        };
-    }
+//    private float[][] getFilterMatrix(String filterName) {
+//        if (filterName == null) {
+//            throw new IllegalArgumentException("Nazwa filtra nie może być null");
+//        }
+//
+//        return switch (filterName.toLowerCase()) {
+//            // Filtry wygładzające
+//            case "blur", "rozmycie" -> new float[][] {
+//                    {1/9f, 1/9f, 1/9f},
+//                    {1/9f, 1/9f, 1/9f},
+//                    {1/9f, 1/9f, 1/9f}
+//            };
+//
+//            case "gaussian blur", "gauss" -> new float[][] {
+//                    {1/16f, 2/16f, 1/16f},
+//                    {2/16f, 4/16f, 2/16f},
+//                    {1/16f, 2/16f, 1/16f}
+//            };
+//
+//            // Filtry wyostrzające
+//            case "sharpen", "wyostrz" -> new float[][] {
+//                    {0, -1, 0},
+//                    {-1, 5, -1},
+//                    {0, -1, 0}
+//            };
+//
+//            case "laplace", "krawędzie" -> new float[][] {
+//                    {-1, -1, -1},
+//                    {-1, 8, -1},
+//                    {-1, -1, -1}
+//            };
+//
+//            // Detektory krawędzi
+//            case "sobel poziomy", "sobel h" -> new float[][] {
+//                    {-1, 0, 1},
+//                    {-2, 0, 2},
+//                    {-1, 0, 1}
+//            };
+//
+//            case "sobel pionowy", "sobel v" -> new float[][] {
+//                    {-1, -2, -1},
+//                    {0, 0, 0},
+//                    {1, 2, 1}
+//            };
+//
+//            case "roberts" -> new float[][] {
+//                    {0, 0, 0},
+//                    {0, 1, 0},
+//                    {0, 0, -1}
+//            };
+//
+//            case "emboss", "płaskorzeźba" -> new float[][] {
+//                    {-2, -1, 0},
+//                    {-1, 1, 1},
+//                    {0, 1, 2}
+//            };
+//
+//            default -> null;
+//        };
+//    }
 
 
     public void drawline(LineModel line){

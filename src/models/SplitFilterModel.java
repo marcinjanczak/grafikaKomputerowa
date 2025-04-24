@@ -1,24 +1,22 @@
 package models;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class FilterModel {
+public class SplitFilterModel {
     private String name;
     private float[][] martix;
-    private ArrayList<FilterModel> filterList;
+    private ArrayList<SplitFilterModel> filterList;
 
-    public FilterModel(String name, float[][] martix) {
+    public SplitFilterModel(String name, float[][] martix) {
         this.name = name;
         this.martix = martix;
     }
-    public static List<FilterModel> readFiltersFromFile(String filePath) throws IOException {
-        List<FilterModel> filterList = new ArrayList<>();
+    public static List<SplitFilterModel> readFiltersFromFile(String filePath) throws IOException {
+        List<SplitFilterModel> filterList = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -33,7 +31,7 @@ public class FilterModel {
                 if (line.isEmpty()) {
                     // Jeśli mamy kompletną macierz, dodaj do listy
                     if (currentName != null && row == 3) {
-                        filterList.add(new FilterModel(currentName, currentMatrix));
+                        filterList.add(new SplitFilterModel(currentName, currentMatrix));
                         currentName = null;
                         row = 0;
                         currentMatrix = new float[3][3];
@@ -61,7 +59,7 @@ public class FilterModel {
 
             // Dodaj ostatni filtr, jeśli plik nie kończy się pustą linią
             if (currentName != null && row == 3) {
-                filterList.add(new FilterModel(currentName, currentMatrix));
+                filterList.add(new SplitFilterModel(currentName, currentMatrix));
             }
 
         } catch (NumberFormatException e) {
@@ -76,5 +74,4 @@ public class FilterModel {
     public float[][] getMartix() {
         return martix;
     }
-
 }

@@ -1,6 +1,6 @@
 package views.dialogs;
 
-import models.FilterModel;
+import models.SplitFilterModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,11 +9,12 @@ import java.util.ArrayList;
 
 public class SplotFilterDialog extends JDialog{
     private JComboBox<String> filterComboBox;
+    private ArrayList<SplitFilterModel> modelArrayList;
     private JButton applyButton;
     private JButton cancelButton;
     private Boolean confirmed = false;
 
-    public SplotFilterDialog(JFrame parent) {
+    public SplotFilterDialog(JFrame parent) throws IOException {
         super(parent,"Podaj parametry:", true);
         setSize(400,300);
         setLocationRelativeTo(parent);
@@ -24,12 +25,13 @@ public class SplotFilterDialog extends JDialog{
         JPanel buttonPanel = getButtonPanel();
         add(buttonPanel,BorderLayout.SOUTH);
 
-    }
-    private JPanel getMainPanel(){
-        var panel = new JPanel(new GridLayout(2,0,10,10));
 
-//        panel.add(filterComboBox);
-        panel.add(new JLabel("Dodaj zakres (0-255)"));
+
+    }
+    private JPanel getMainPanel() throws IOException {
+        var panel = new JPanel(new GridLayout(2,0,10,10));
+       filterComboBox = getFilterComboBox();
+       panel.add(filterComboBox);
         return panel;
     }
     private JPanel getButtonPanel(){
@@ -48,16 +50,27 @@ public class SplotFilterDialog extends JDialog{
         return panel;
     }
     private JComboBox<String> getFilterComboBox() throws IOException {
-        var comboBox = new JComboBox<String>();
-        JComboBox<String> filJComboBox = new JComboBox<>();
+        modelArrayList = (ArrayList<SplitFilterModel>) SplitFilterModel.readFiltersFromFile("macierze.txt");
 
-
-
-        /// TODO: zaimplementować dodanie nazw i tablic do tego czaru.
-
-        ArrayList<FilterModel> modelArrayList = (ArrayList<FilterModel>) FilterModel.readFiltersFromFile("macierze.txt");
-
-        return comboBox;
+        filterComboBox = new JComboBox<>(
+        modelArrayList.stream()
+                .map(SplitFilterModel::getName)
+                .toArray(String[]::new)
+      );
+        return filterComboBox;
     }
-
+    public SplitFilterModel getSplitFilter(){
+        if(confirmed){
+            String selectedFilter = (String) filterComboBox.getSelectedItem();
+//            System.out.println(selectedFilter);
+            float[][] matrix = new float[3][3];
+            matrix = modelArrayList.stream()
+                    .filter(modelArrayList -> modelArrayList.getName().equals(selectedFilter))
+                    .map(SplitFilterModel::getMartix)
+                    .findFirst()
+                    .orElse(null);
+            return new SplitFilterModel(selectedFilter,matrix);
+        }
+        return null;
+    }
 }

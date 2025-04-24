@@ -1,6 +1,6 @@
 package views.dialogs;
 
-import models.FilterModel;
+import models.SplitFilterModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +55,7 @@ public class StatisticFilterDialog extends JDialog {
 
         /// TODO: zaimplementować dodanie nazw i tablic do tego czaru.
 
-        ArrayList<FilterModel> modelArrayList = (ArrayList<FilterModel>) FilterModel.readFiltersFromFile("macierze.txt");
+        ArrayList<SplitFilterModel> modelArrayList = (ArrayList<SplitFilterModel>) SplitFilterModel.readFiltersFromFile("macierze.txt");
 
         return comboBox;
     }
