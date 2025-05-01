@@ -167,7 +167,8 @@ public class MainFrame extends JFrame {
     }
     private void makeCurve(){
        MakeCurveDialog dialog = new MakeCurveDialog(this);
-        dialog.setVisible(true);
+       dialog.setVisible(true);
+
 
     }
 

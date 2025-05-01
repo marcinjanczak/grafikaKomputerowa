@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MakeCurveDialog extends JDialog {
@@ -84,10 +85,17 @@ public class MakeCurveDialog extends JDialog {
             JButton cancelButton = new JButton("Anuluj");
 
             cancelButton.addActionListener(e-> dispose());
+            okButton.addActionListener(e -> getPoints());
 
             panel.add(okButton);
             panel.add(cancelButton);
 
             return panel;
+        }
+        public List<Point> getPoints(){
+            for (Point points : selectedPoints){
+                System.out.println(points);
+            }
+            return selectedPoints;
         }
     }

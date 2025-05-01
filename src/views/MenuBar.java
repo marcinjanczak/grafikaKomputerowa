@@ -137,7 +137,7 @@ public class MenuBar extends JMenuBar {
         filtersPanelManu.add(gradientFilter);
 
 
-//        curvePanelMenu.add(makeCurve);
+        curvePanelMenu.add(makeCurve);
 
         // Dodawanie wszystkich menu do paska menu
         add(fileMenu);
