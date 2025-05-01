@@ -166,7 +166,7 @@ public class MainFrame extends JFrame {
         imageController.transformDilataion();
     }
     private void makeCurve(){
-        ImagePanel.MakeCurveDialog dialog = new ImagePanel.MakeCurveDialog(this);
+       MakeCurveDialog dialog = new MakeCurveDialog(this);
         dialog.setVisible(true);
 
     }
