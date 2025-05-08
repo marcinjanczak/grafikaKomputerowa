@@ -444,6 +444,15 @@ public class ImageModel {
 
         Pixel[][] newPixelArray = new Pixel[width][height];
 
+        float sumOfWeights = 0;
+        for (int fy = 0; fy < 3; fy++) {
+            for (int fx = 0; fx < 3; fx++) {
+                sumOfWeights += filterMatrix[fy][fx];
+            }
+        }
+        boolean normalize = (sumOfWeights != 0);
+
+
         for (int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 float sumR = 0, sumG = 0, sumB = 0;
@@ -456,9 +465,11 @@ public class ImageModel {
                         Pixel neighbor = imageArray[imageX][imageY];  // UWAGA: imageX przed imageY!
                         float weight = filterMatrix[fy][fx];
 
-                        sumR += neighbor.getRedPixel() * weight;
-                        sumG += neighbor.getGreenPixel() * weight;
-                        sumB += neighbor.getBluePixel() * weight;
+                        float normalizedWeight = normalize ? weight / sumOfWeights : weight;
+
+                        sumR += neighbor.getRedPixel() * normalizedWeight;
+                        sumG += neighbor.getGreenPixel() * normalizedWeight;
+                        sumB += neighbor.getBluePixel() * normalizedWeight;
                     }
                 }
 
