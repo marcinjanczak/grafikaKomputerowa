@@ -19,13 +19,19 @@ public class MakeCurveDialog extends JDialog {
             super(parent,"Wybierz punkty", true);
             setSize(300,200);
             setLocationRelativeTo(parent);
-            setLayout(new BorderLayout());
+            setLayout(new GridLayout(2,2));
 
-            JPanel panel = getMainPanel(parent);
-            add(panel,BorderLayout.CENTER);
+            JPanel imagePanel = getMainPanel(parent);
+            add(imagePanel);
+
+            JPanel pointsArea = getPointsArea();
+            add(pointsArea);
+
+            JPanel maniPulationPanel = getPointManipulationPanel();
+            add(maniPulationPanel);
 
             JPanel buttonPanel = getButtonpanel();
-            add(buttonPanel,BorderLayout.SOUTH);
+            add(buttonPanel);
         }
         private JPanel getMainPanel(JFrame parent) {
             this.image = ((MainFrame)parent).getLeftPanel().getModel().getImage();
@@ -67,6 +73,9 @@ public class MakeCurveDialog extends JDialog {
 
             return panel;
         }
+        private void actionListerens(){
+
+        }
         public void adjustWindowSize(BufferedImage image) {
             if (image == null) {
                 return;
@@ -89,6 +98,27 @@ public class MakeCurveDialog extends JDialog {
 
             panel.add(okButton);
             panel.add(cancelButton);
+
+            return panel;
+        }
+        private JPanel getPointsArea(){
+            var panel = new JPanel();
+            JTextArea pointsArea = new JTextArea();
+
+
+            panel.add(pointsArea);
+
+            return panel;
+        }
+        private JPanel getPointManipulationPanel(){
+            var panel = new JPanel(new GridLayout(3,1,10,10));
+            JButton scaleButton = new JButton("Skaluj");
+            JButton moveButton = new JButton("Przesuń");
+            JButton rotateButton = new JButton("Obróć");
+
+            panel.add(scaleButton);
+            panel.add(moveButton);
+            panel.add(rotateButton);
 
             return panel;
         }
