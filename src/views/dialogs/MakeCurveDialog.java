@@ -17,21 +17,51 @@ public class MakeCurveDialog extends JDialog {
 
         public MakeCurveDialog(JFrame parent) {
             super(parent,"Wybierz punkty", true);
-            setSize(300,200);
+            setSize(800,600);
             setLocationRelativeTo(parent);
-            setLayout(new GridLayout(2,2));
+            setLayout(new GridBagLayout());
 
             JPanel imagePanel = getMainPanel(parent);
-            add(imagePanel);
-
             JPanel pointsArea = getPointsArea();
-            add(pointsArea);
-
             JPanel maniPulationPanel = getPointManipulationPanel();
-            add(maniPulationPanel);
-
             JPanel buttonPanel = getButtonpanel();
-            add(buttonPanel);
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.fill = GridBagConstraints.BOTH;
+
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 9; // Zajmuje 3/4 szerokości
+            gbc.gridheight = 9; // Zajmuje 3/4 wysokości
+            gbc.weightx = 0.9; // Waga szerokości
+            gbc.weighty = 0.9; // Waga wysokości
+
+            add(imagePanel,gbc);
+
+            gbc.gridx = 9;
+            gbc.gridy = 0;
+            gbc.gridwidth = 1; // Zajmuje 1/4 szerokości
+            gbc.gridheight = 9; // Zajmuje 3/4 wysokości
+            gbc.weightx = 0.10;
+            gbc.weighty = 0.9;
+            add(pointsArea,gbc);
+
+
+            gbc.gridx = 0;
+            gbc.gridy = 9;
+            gbc.gridwidth = 9; // 3/4 szerokości
+            gbc.gridheight = 1; // 1/4 wysokości
+            gbc.weightx = 0.9;
+            gbc.weighty = 0.1;
+            add(maniPulationPanel,gbc);
+
+            gbc.gridx = 9;
+            gbc.gridy = 9;
+            gbc.gridwidth = 1; // 1/4 szerokości
+            gbc.gridheight = 1; // 1/4 wysokości
+            gbc.weightx = 0.1;
+            gbc.weighty = 0.1;
+            add(buttonPanel,gbc);
         }
         private JPanel getMainPanel(JFrame parent) {
             this.image = ((MainFrame)parent).getLeftPanel().getModel().getImage();
@@ -80,9 +110,9 @@ public class MakeCurveDialog extends JDialog {
             if (image == null) {
                 return;
             }
-            int newWidth = Math.max(getWidth(), image.getWidth() + 100);
+            int newWidth = Math.max(getWidth(), image.getWidth() + 300);
 
-            int newHeight = Math.max(getHeight(), image.getHeight() + 100);
+            int newHeight = Math.max(getHeight(), image.getHeight() + 300);
             setSize(newWidth, newHeight);
             setLocationRelativeTo(null);
         }
@@ -103,24 +133,56 @@ public class MakeCurveDialog extends JDialog {
         }
         private JPanel getPointsArea(){
             var panel = new JPanel();
+            JButton editPoint = new JButton("Edutuj punkt");
+            JButton deletePoint = new JButton("Usuń punkt");
+
             JTextArea pointsArea = new JTextArea();
 
-
+            panel.add(editPoint);
+            panel.add(deletePoint);
             panel.add(pointsArea);
 
             return panel;
         }
         private JPanel getPointManipulationPanel(){
-            var panel = new JPanel(new GridLayout(3,1,10,10));
+            var finalpanel = new JPanel(new GridLayout(1,3));
+
+
+            var manipulationPanel = new JPanel(new GridLayout(3,3,10,10));
             JButton scaleButton = new JButton("Skaluj");
+            JTextField scaleXField = new JTextField();
+            JTextField scaleYField = new JTextField();
+
             JButton moveButton = new JButton("Przesuń");
+            JTextField moveXField = new JTextField();
+            JTextField moveYField = new JTextField();
+
             JButton rotateButton = new JButton("Obróć");
+            JTextField rotateXField = new JTextField();
+            JTextField rotateYField = new JTextField();
 
-            panel.add(scaleButton);
-            panel.add(moveButton);
-            panel.add(rotateButton);
+            manipulationPanel.add(scaleButton);
+            manipulationPanel.add(scaleXField);
+            manipulationPanel.add(scaleYField);
 
-            return panel;
+            manipulationPanel.add(moveButton);
+            manipulationPanel.add(moveXField);
+            manipulationPanel.add(moveYField);
+
+            manipulationPanel.add(rotateButton);
+            manipulationPanel.add(rotateXField);
+            manipulationPanel.add(rotateYField);
+
+            var matrixPanel = new JPanel(new GridLayout(3,3));
+
+            var curvePanel = new JPanel(new GridLayout(1,2));
+
+
+            finalpanel.add(manipulationPanel);
+            finalpanel.add(matrixPanel);
+            finalpanel.add(curvePanel);
+
+            return finalpanel;
         }
         public List<Point> getPoints(){
             for (Point points : selectedPoints){
