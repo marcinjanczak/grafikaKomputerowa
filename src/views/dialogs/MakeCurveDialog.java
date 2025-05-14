@@ -75,7 +75,6 @@ public class MakeCurveDialog extends JDialog {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 if (image != null) {
                     // Rysowanie obrazu
                     g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
@@ -84,6 +83,15 @@ public class MakeCurveDialog extends JDialog {
                     g.setColor(Color.RED);
                     for (Point p : selectedPoints) {
                         g.fillOval(p.x - 5, p.y - 5, 10, 10);
+                    }
+                    if(selectedPoints.size() > 1){
+                        g.setColor(Color.RED);
+                        Point prev = selectedPoints.get(0);
+                        for (int i = 1; i < selectedPoints.size(); i++) {
+                            Point current = selectedPoints.get(i);
+                            g.drawLine(prev.x, prev.y, current.x, current.y);
+                            prev = current ;
+                        }
                     }
                 } else {
                     g.setColor(Color.WHITE);
@@ -100,8 +108,18 @@ public class MakeCurveDialog extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (image != null) {
-                    selectedPoints.add(e.getPoint());
-                    listModel.addElement(e.getPoint());
+                    int selectedIndex = pointsList.getSelectedIndex();
+
+                    if(selectedIndex != -1){
+                        Point p = selectedPoints.get(selectedIndex);
+                        p.setLocation(e.getPoint());
+                        listModel.set(selectedIndex, p);
+                    }else {
+                        selectedPoints.add(e.getPoint());
+                        listModel.addElement(e.getPoint());
+                    }
+//                    selectedPoints.add(e.getPoint());
+//                    listModel.addElement(e.getPoint());
                     panel.repaint();
 
                 }
@@ -206,7 +224,6 @@ public class MakeCurveDialog extends JDialog {
             return this;
         }
     }
-
     private JPanel getPointManipulationPanel() {
         var finalpanel = new JPanel(new GridLayout(1, 3));
 
