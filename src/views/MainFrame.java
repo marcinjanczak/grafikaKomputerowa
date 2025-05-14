@@ -118,7 +118,7 @@ public class MainFrame extends JFrame {
         menuBar.getStatisticFilter().addActionListener(e -> showStatisticFilterDialog());
         menuBar.getGradientFilter().addActionListener(e -> showGradientFilterDialog());
 
-        menuBar.getMakeCurve().addActionListener(e-> makeCurve());
+        menuBar.getMakeCurve().addActionListener(e -> makeCurve());
 
     }
 
@@ -126,7 +126,7 @@ public class MainFrame extends JFrame {
         RectangleDialog dialog = new RectangleDialog(this);
         dialog.setVisible(true);
         RectangleModel rectangle = dialog.getRectangle();
-        if(rectangle != null){
+        if (rectangle != null) {
             imageController.drawRectangle(rectangle);
         }
     }
@@ -136,49 +136,53 @@ public class MainFrame extends JFrame {
         dialog.setVisible(true);
         SplitFilterModel splitFilterModel = dialog.getSplitFilter();
 
-        if(splitFilterModel != null){
+        if (splitFilterModel != null) {
             imageController.addSplitFilter(splitFilterModel);
         }
     }
 
-    private void showStatisticFilterDialog(){
+    private void showStatisticFilterDialog() {
         StatisticFilterDialog dialog = new StatisticFilterDialog(this);
         dialog.setVisible(true);
         String statisticFilterName = dialog.getStatisticFilterName();
 
-        if(statisticFilterName != null){
-            imageController.addStatisticFilter(statisticFilterName);;
+        if (statisticFilterName != null) {
+            imageController.addStatisticFilter(statisticFilterName);
+            ;
         }
 
     }
-    private void showGradientFilterDialog(){
+
+    private void showGradientFilterDialog() {
         GradientFilterDialog dialog = new GradientFilterDialog(this);
         dialog.setVisible(true);
         GradientModel gradientModel = dialog.getGradientModel();
 
-        if( gradientModel != null){
+        if (gradientModel != null) {
             imageController.addGradientFilter(gradientModel);
         }
 
     }
 
-    private void transformDilataionPicture(){
+    private void transformDilataionPicture() {
         imageController.transformDilataion();
     }
-    private void makeCurve(){
-       MakeCurveDialog dialog = new MakeCurveDialog(this);
-       dialog.setVisible(true);
+
+    private void makeCurve() {
+        MakeCurveDialog dialog = new MakeCurveDialog(this);
+        dialog.setVisible(true);
 
 
     }
 
-    private void changeContrastAndBrightess(){
+    private void changeContrastAndBrightess() {
         ChangleContrastAndBrightenssDialog dialog = new ChangleContrastAndBrightenssDialog(this);
         dialog.setVisible(true);
         ContrAndBrightModel contrAndBrightModel = dialog.getContrAndBrightModel();
 
-       imageController.changeContrastAndBrightness(contrAndBrightModel);
+        imageController.changeContrastAndBrightness(contrAndBrightModel);
     }
+
     private void showCircleDialog() {
         CircleDialog dialog = new CircleDialog(this);
         dialog.setVisible(true);
@@ -188,33 +192,41 @@ public class MainFrame extends JFrame {
             imageController.drawCircle(circle);
         }
     }
-    private void showLineDalog(){
+
+    private void showLineDalog() {
         LinesDialog dialog = new LinesDialog(this);
         dialog.setVisible(true);
         LineModel line = dialog.getLine();
 
-        if(line != null){
+        if (line != null) {
             imageController.drawline(line);
         }
-}
-    private void transformNegative(){
+    }
+
+    private void transformNegative() {
         imageController.transformNegative();
     }
-    private void transformNormalizeBrightness(){
+
+    private void transformNormalizeBrightness() {
         imageController.normalizeBrightness();
     }
-    private void makeGrayByRed(){
+
+    private void makeGrayByRed() {
         imageController.makeGrayByRed();
     }
-    private void makeGrayByGreen(){
+
+    private void makeGrayByGreen() {
         imageController.makeGrayByGreen();
     }
-    private void makeGrayByBlue(){
+
+    private void makeGrayByBlue() {
         imageController.makeGrayByBlue();
     }
-    private void makeByYUV(){
+
+    private void makeByYUV() {
         imageController.makeGrayByYUV();
     }
+
     private void showFileChooserDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Wybierz plik graficzny");
@@ -225,6 +237,7 @@ public class MainFrame extends JFrame {
             imageController.loadImage(file);
         }
     }
+
     private void showSaveFileDialog() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Zapisz obraz");

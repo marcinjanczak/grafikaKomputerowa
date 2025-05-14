@@ -26,6 +26,7 @@ public class ImagePanel extends JPanel {
 
     /**
      * Ustawia nowy model obrazu i odświeża panel.
+     *
      * @param model Nowy model obrazu do wyświetlenia.
      */
     public void setModel(ImageModel model) {
@@ -39,6 +40,7 @@ public class ImagePanel extends JPanel {
 
     /**
      * Przesłonięta metoda rysowania komponentu. Wyświetla obraz na środku panelu.
+     *
      * @param g Kontekst graficzny wykorzystywany do rysowania obrazu.
      */
     @Override
@@ -48,10 +50,10 @@ public class ImagePanel extends JPanel {
         if (model != null && model.getImage() != null) {
             // Obliczenie współrzędnych, aby obraz był wyśrodkowany w panelu
             int x = (getWidth() - model.getImage().getWidth()) / 2;
-            int y = (getHeight() -  model.getImage().getHeight()) / 2;
+            int y = (getHeight() - model.getImage().getHeight()) / 2;
 
             // Rysowanie obrazu na panelu
-            g.drawImage( model.getImage(), x, y, this);
+            g.drawImage(model.getImage(), x, y, this);
         }
     }
 }

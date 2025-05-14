@@ -12,7 +12,7 @@ public class MenuBar extends JMenuBar {
     private final JMenu leftPanelMenu;
     private final JMenu rightPanelMenu;
     private final JMenu editPanelMenu;
-    private final  JMenu transformationsPanelMenu;
+    private final JMenu transformationsPanelMenu;
     private final JMenu dilatationsPanelMenu;
     private final JMenu filtersPanelManu;
     private final JMenu curvePanelMenu;
@@ -178,38 +178,36 @@ public class MenuBar extends JMenuBar {
         return drawCircleMenuItem;
     }
 
-    public JMenuItem getDrawRectangleMenuItem(){
+    public JMenuItem getDrawRectangleMenuItem() {
         return drawRectangleMenuItem;
     }
 
-    public JMenuItem getCopyRightPanelMenuItem(){
+    public JMenuItem getCopyRightPanelMenuItem() {
         return copyRightPanelMenuItem;
     }
 
-    public JMenuItem getDrawLineMenuItem(){
+    public JMenuItem getDrawLineMenuItem() {
         return drawLineMenuItem;
     }
 
-    public JMenuItem getMakegrByAyaverageGray(){
+    public JMenuItem getMakegrByAyaverageGray() {
         return makegrByAyaverageGray;
     }
 
-    public JMenuItem getChangeContrastAndBrightness(){
+    public JMenuItem getChangeContrastAndBrightness() {
         return changeContrastAndBrightness;
     }
 
-    public JMenuItem getTransformNegative(){
+    public JMenuItem getTransformNegative() {
         return transformNegative;
     }
 
-    public JMenuItem getTransformNormalizeBrightness(){
+    public JMenuItem getTransformNormalizeBrightness() {
         return transformNormalizeBrightness;
     }
 
 
-    ///
     /// Gettery dla poszarzania
-    ///
 
     public JMenuItem getMakeByRedGray() {
         return makeByRedGray;
@@ -227,15 +225,12 @@ public class MenuBar extends JMenuBar {
         return makeByYUV;
     }
 
-    ///
     /// Gettery dla tworzenia krzywej
-    ///
-    public JMenuItem getMakeCurve(){
+    public JMenuItem getMakeCurve() {
         return makeCurve;
     }
-    ///
+
     /// Gettery dla wybierania filtrów wielopunktowych
-    ///
     public JMenuItem getStatisticFilter() {
         return statisticFilter;
     }
