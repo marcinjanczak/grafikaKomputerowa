@@ -103,6 +103,17 @@ public class MakeCurveDialog extends JDialog {
         };
 //            adjustWindowSize(image);
 
+        pointsList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 1){
+                    int index = pointsList.locationToIndex(e.getPoint());
+                    if(index == 1 || !pointsList.getCellBounds(index, index).contains((e.getPoint()))){
+                        pointsList.clearSelection();
+                    }
+                }
+            }
+        });
         // Obsługa myszy
         panel.addMouseListener(new MouseAdapter() {
             @Override
@@ -166,7 +177,7 @@ public class MakeCurveDialog extends JDialog {
         JButton editPointButton = new JButton("Edutuj punkt");
         JButton deletePointButton = new JButton("Usuń punkt");
         var buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(editPointButton);
+//        buttonPanel.add(editPointButton);
         buttonPanel.add(deletePointButton);
 
         pointsList.addListSelectionListener(e -> {
