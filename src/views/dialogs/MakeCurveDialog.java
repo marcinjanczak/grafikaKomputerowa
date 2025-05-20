@@ -301,7 +301,7 @@ public class MakeCurveDialog extends JDialog {
 
         scaleButton.addActionListener(e -> setScale());
         moveButton.addActionListener(e -> setMove());
-        rotateButton.addActionListener(e -> dispose());
+        rotateButton.addActionListener(e -> setRotate());
 
         var matrixPanel = new JPanel(new GridLayout(3, 3));
 
@@ -332,6 +332,28 @@ public class MakeCurveDialog extends JDialog {
 
         setSelectedPoints(newPoints);
         repaint();
+    }
+    private void setRotate(){
+        double rotateValue = parseDoubleField(rotateField);
+
+        double[][] moveMatrix = createRotateMatrix(rotateValue);
+
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(moveMatrix, getPoints());
+
+        setSelectedPoints(newPoints);
+        repaint();
+    }
+    private double[][] createRotateMatrix(double rotateValue){
+        double radians = Math.toRadians(rotateValue);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        System.out.println(cos);
+        System.out.println(sin);
+        return new double[][]{
+                {cos,    -sin,      0},
+                {sin,    cos,      0},
+                {0,      0,      1}
+        };
     }
     private double[][] createMoveMatrix(double xValue, double yValue){
         return new double[][]{
