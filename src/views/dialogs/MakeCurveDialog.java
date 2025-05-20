@@ -300,7 +300,7 @@ public class MakeCurveDialog extends JDialog {
 
 
         scaleButton.addActionListener(e -> setScale());
-        moveButton.addActionListener(e -> dispose());
+        moveButton.addActionListener(e -> setMove());
         rotateButton.addActionListener(e -> dispose());
 
         var matrixPanel = new JPanel(new GridLayout(3, 3));
@@ -317,12 +317,28 @@ public class MakeCurveDialog extends JDialog {
         double yValue = parseDoubleField(scaleYField);
         double[][] scalematrix = createScaleMatrix(xValue,yValue);
 
-
         List<Point> newPoints = bezierDrawer.calculateNewPoints(scalematrix, getPoints());
 
        setSelectedPoints(newPoints);
        repaint();
 
+    }
+    private void setMove(){
+        double xValue = parseDoubleField(moveXField);
+        double yValue = parseDoubleField(moveYField);
+        double[][] moveMatrix = createMoveMatrix(xValue,yValue);
+
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(moveMatrix, getPoints());
+
+        setSelectedPoints(newPoints);
+        repaint();
+    }
+    private double[][] createMoveMatrix(double xValue, double yValue){
+        return new double[][]{
+                {1,      0,      xValue},
+                {0,      1,      yValue},
+                {0,      0,      1}
+        };
     }
 
     private double[][] createScaleMatrix(double xValue, double yValue){
