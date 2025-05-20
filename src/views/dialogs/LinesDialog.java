@@ -12,19 +12,20 @@ public class LinesDialog extends JDialog {
     private Boolean confirmed = false;
 
     public LinesDialog(JFrame parent) {
-        super(parent,"Podaj parametry:", true);
-        setSize(300,200);
+        super(parent, "Podaj parametry:", true);
+        setSize(300, 200);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
         JPanel panel = getMainPanel();
-        add(panel,BorderLayout.CENTER);
+        add(panel, BorderLayout.CENTER);
 
         JPanel buttonPanel = getButtonpanel();
-        add(buttonPanel,BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.SOUTH);
 
     }
-    private JPanel getMainPanel(){
+
+    private JPanel getMainPanel() {
 
         JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -53,38 +54,41 @@ public class LinesDialog extends JDialog {
 
         return panel;
     }
-    private JPanel getButtonpanel(){
-            JPanel buttonPanel = new JPanel();
-            JButton okButton = new JButton("OK");
-            JButton cancelButton = new JButton("Anuluj");
 
-            // Obsługa przycisku OK. Sprawdzenie poprawności danych i zamknięcie okna. Jeśli dane są niepoprawne, wyświetlany jest komunikat z błędem.
-            okButton.addActionListener(e -> {
-                if (validateFields()) {
-                    confirmed = true;
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Nieprawidłowe dane!", "Błąd", JOptionPane.ERROR_MESSAGE);
-                }
-            });
+    private JPanel getButtonpanel() {
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Anuluj");
 
-            // Obsługa przycisku Anuluj przez zamknięcie okna dialogowego.
-            cancelButton.addActionListener(e -> dispose());
+        // Obsługa przycisku OK. Sprawdzenie poprawności danych i zamknięcie okna. Jeśli dane są niepoprawne, wyświetlany jest komunikat z błędem.
+        okButton.addActionListener(e -> {
+            if (validateFields()) {
+                confirmed = true;
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Nieprawidłowe dane!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
-            buttonPanel.add(okButton);
-            buttonPanel.add(cancelButton);
-            return buttonPanel;
+        // Obsługa przycisku Anuluj przez zamknięcie okna dialogowego.
+        cancelButton.addActionListener(e -> dispose());
+
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        return buttonPanel;
+    }
+
+
+    public LineModel getLine() {
+        if (confirmed) {
+            return new LineModel(
+                    parseField(intervalsField),
+                    selectedColor
+            );
         }
+        return null;
+    }
 
-
-        public LineModel getLine() {
-            if (confirmed) {
-                return new LineModel(
-                        parseField(intervalsField),
-                        selectedColor
-                );
-            }return null;
-        }
     private Boolean validateFields() {
         return parseField(intervalsField) != null;
     }

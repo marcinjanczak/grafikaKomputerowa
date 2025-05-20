@@ -1,5 +1,6 @@
 package views.dialogs;
 
+import models.BezierDrawer;
 import views.MainFrame;
 
 import javax.swing.*;
@@ -15,6 +16,13 @@ public class MakeCurveDialog extends JDialog {
     private BufferedImage image;
     private JList<Point> pointsList;
     private DefaultListModel<Point> listModel;
+    private BezierDrawer bezierDrawer;
+
+
+    private JTextField curveStepsFiield;
+    private JButton makeCurveButton;
+    private boolean drawCurve;
+
 
     public MakeCurveDialog(JFrame parent) {
         super(parent, "Wybierz punkty", true);
@@ -24,6 +32,7 @@ public class MakeCurveDialog extends JDialog {
 
         listModel = new DefaultListModel<>();
         pointsList = new JList<>(listModel);
+        bezierDrawer = new BezierDrawer();
 
         JPanel imagePanel = getMainPanel(parent);
         JPanel pointsArea = getPointsArea();
@@ -92,6 +101,10 @@ public class MakeCurveDialog extends JDialog {
                             g.drawLine(prev.x, prev.y, current.x, current.y);
                             prev = current ;
                         }
+                    }
+                    if(drawCurve && selectedPoints.size() >= 2){
+                        g.setColor(Color.BLUE);
+                        bezierDrawer.drawBezier(g,getPoints(),parseIntField(curveStepsFiield));
                     }
                 } else {
                     g.setColor(Color.WHITE);
@@ -236,7 +249,7 @@ public class MakeCurveDialog extends JDialog {
         }
     }
     private JPanel getPointManipulationPanel() {
-        var finalpanel = new JPanel(new GridLayout(1, 3));
+        var finalpanel = new JPanel(new GridLayout(1, 2));
 
 
         var manipulationPanel = new JPanel(new GridLayout(3, 3, 10, 10));
@@ -268,18 +281,37 @@ public class MakeCurveDialog extends JDialog {
 
         var curvePanel = new JPanel(new GridLayout(1, 2));
 
+        makeCurveButton = new JButton("Narysuj Krzywą");
+        curveStepsFiield = new JTextField("100");
+
+        curvePanel.add(makeCurveButton);
+        curvePanel.add(curveStepsFiield);
+
+        makeCurveButton.addActionListener(e -> {
+            drawCurve = true;
+            repaint();
+        });
+
 
         finalpanel.add(manipulationPanel);
-        finalpanel.add(matrixPanel);
+//        finalpanel.add(matrixPanel);
         finalpanel.add(curvePanel);
 
         return finalpanel;
     }
 
-    public List<Point> getPoints() {
-        for (Point points : selectedPoints) {
-            System.out.println(points);
+    private Integer parseIntField(JTextField field){
+            try {
+                return Integer.parseInt(field.getText());
+            } catch (NumberFormatException e) {
+                return null;
+            }
         }
+
+    public List<Point> getPoints() {
+//        for (Point points : selectedPoints) {
+//            System.out.println(points);
+//        }
         return selectedPoints;
     }
 }
