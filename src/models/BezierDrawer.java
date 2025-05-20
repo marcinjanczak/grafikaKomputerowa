@@ -13,13 +13,13 @@ public class BezierDrawer {
         for (int i = 0; i <= steps; i++){
             double t = i/(double)steps;
             Point current  = calculateBezierPoint(controlPoints, t);
-            System.out.println(current.x+" "+ current.y);
+//            System.out.println(current.x+" "+ current.y);
 
             if(previous != null){
                 g.drawLine(previous.x, previous.y, current.x, current.y);
             }
             previous = current;
-            System.out.println(previous.x + " "+ previous.y);
+//            System.out.println(previous.x + " "+ previous.y);
         }
     }
 
@@ -36,9 +36,9 @@ public class BezierDrawer {
 
         for (int k = pointList.size() - 1; k > 0; k--) {
             for (int i = 0; i < k; i++) {
-                tmp[i] = new Point(
-                        (int) ((1 - t) * tmp[i].x + t * tmp[i + 1].x),
-                        (int) ((1 - t) * tmp[i].y + t * tmp[i + 1].y));
+                double x = (1 - t) * tmp[i].x + t * tmp[i + 1].x;
+                double y = (1 - t) * tmp[i].y + t * tmp[i + 1].y ;
+                tmp[i] = new Point((int) Math.round(x),(int) Math.round(y));
             }
         }
         return tmp[0];
