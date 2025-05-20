@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class MakeCurveDialog extends JDialog {
     private DefaultListModel<Point> listModel;
 
     private JTextField curveStepsFiield;
+    private JTextArea matrixDisplay;
 
     private JButton makeCurveButton;
     private JButton cancelButton;
@@ -273,7 +275,7 @@ public class MakeCurveDialog extends JDialog {
         var finalpanel = new JPanel(new GridLayout(1, 2));
 
 
-        var manipulationPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        var manipulationPanel = new JPanel(new GridLayout(3, 6, 10, 10));
         JButton scaleButton = new JButton("Skaluj");
         scaleXField = new JTextField();
         scaleYField = new JTextField();
@@ -283,7 +285,7 @@ public class MakeCurveDialog extends JDialog {
         moveYField = new JTextField();
 
         JButton rotateButton = new JButton("Obróć");
-        rotateField =new JTextField();
+        rotateField = new JTextField();
 
 
         manipulationPanel.add(scaleButton);
@@ -303,8 +305,14 @@ public class MakeCurveDialog extends JDialog {
         moveButton.addActionListener(e -> setMove());
         rotateButton.addActionListener(e -> setRotate());
 
-        var matrixPanel = new JPanel(new GridLayout(3, 3));
+        var matrixPanel = new JPanel(new BorderLayout());
 
+        matrixPanel.setBorder(BorderFactory.createTitledBorder("Macierz transformacji"));
+
+        matrixDisplay = new JTextArea(3,20);
+        matrixDisplay.setEditable(false);
+        matrixDisplay.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        matrixPanel.add(new JScrollPane(matrixDisplay),BorderLayout.CENTER);
 
         finalpanel.add(manipulationPanel);
         finalpanel.add(matrixPanel);
@@ -315,60 +323,48 @@ public class MakeCurveDialog extends JDialog {
     private void setScale() {
         double xValue = parseDoubleField(scaleXField);
         double yValue = parseDoubleField(scaleYField);
-        double[][] scalematrix = createScaleMatrix(xValue,yValue);
+        double[][] scalematrix = bezierDrawer.createScaleMatrix(xValue, yValue);
 
+        updateMatrixDisplay(scalematrix);
         List<Point> newPoints = bezierDrawer.calculateNewPoints(scalematrix, getPoints());
-
-       setSelectedPoints(newPoints);
-       repaint();
+        setSelectedPoints(newPoints);
+        repaint();
 
     }
-    private void setMove(){
+
+    private void setMove() {
         double xValue = parseDoubleField(moveXField);
         double yValue = parseDoubleField(moveYField);
-        double[][] moveMatrix = createMoveMatrix(xValue,yValue);
+        double[][] moveMatrix = bezierDrawer.createMoveMatrix(xValue, yValue);
 
+        updateMatrixDisplay(moveMatrix);
         List<Point> newPoints = bezierDrawer.calculateNewPoints(moveMatrix, getPoints());
-
         setSelectedPoints(newPoints);
         repaint();
     }
-    private void setRotate(){
+
+    private void setRotate() {
         double rotateValue = parseDoubleField(rotateField);
+        double[][] rotateMatrix = bezierDrawer.createRotateMatrix(rotateValue);
 
-        double[][] moveMatrix = createRotateMatrix(rotateValue);
-
-        List<Point> newPoints = bezierDrawer.calculateNewPoints(moveMatrix, getPoints());
-
+        updateMatrixDisplay(rotateMatrix);
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(rotateMatrix, getPoints());
         setSelectedPoints(newPoints);
         repaint();
     }
-    private double[][] createRotateMatrix(double rotateValue){
-        double radians = Math.toRadians(rotateValue);
-        double cos = Math.cos(radians);
-        double sin = Math.sin(radians);
-        System.out.println(cos);
-        System.out.println(sin);
-        return new double[][]{
-                {cos,    -sin,      0},
-                {sin,    cos,      0},
-                {0,      0,      1}
-        };
-    }
-    private double[][] createMoveMatrix(double xValue, double yValue){
-        return new double[][]{
-                {1,      0,      xValue},
-                {0,      1,      yValue},
-                {0,      0,      1}
-        };
-    }
+    private void updateMatrixDisplay(double[][] matrix){
+        StringBuilder sb = new StringBuilder();
+        DecimalFormat df = new DecimalFormat();
 
-    private double[][] createScaleMatrix(double xValue, double yValue){
-        return new double[][]{
-                {xValue, 0,      0},
-                {0,      yValue, 0},
-                {0,      0,      1}
-        };
+        for (int i = 0; i < 3; i++) {
+            sb.append("| ");
+            for (int j = 0; j < 3; j++) {
+                sb.append(String.format("%6s", df.format(matrix[i][j])));
+                sb.append(" ");
+            }
+            sb.append("|\n");
+        }
+        matrixDisplay.setText(sb.toString());
     }
 
     private double parseDoubleField(JTextField field) {

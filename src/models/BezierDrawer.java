@@ -56,4 +56,30 @@ public class BezierDrawer {
         }
         return  newPoints;
     }
+    public double[][] createRotateMatrix(double rotateValue){
+        double radians = Math.toRadians(rotateValue);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        System.out.println(cos);
+        System.out.println(sin);
+        return new double[][]{
+                {cos,    -sin,      0},
+                {sin,    cos,      0},
+                {0,      0,      1}
+        };
+    }
+    public double[][] createMoveMatrix(double xValue, double yValue){
+        return new double[][]{
+                {1,      0,      xValue},
+                {0,      1,      yValue},
+                {0,      0,      1}
+        };
+    }
+    public double[][] createScaleMatrix(double xValue, double yValue){
+        return new double[][]{
+                {xValue, 0,      0},
+                {0,      yValue, 0},
+                {0,      0,      1}
+        };
+    }
 }
