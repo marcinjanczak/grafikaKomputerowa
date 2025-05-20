@@ -12,15 +12,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MakeCurveDialog extends JDialog {
-    private List<Point> selectedPoints = new ArrayList<>();
     private BufferedImage image;
-    private JList<Point> pointsList;
-    private DefaultListModel<Point> listModel;
     private BezierDrawer bezierDrawer;
 
+    private JList<Point> pointsList;
+    private List<Point> selectedPoints = new ArrayList<>();
+    private DefaultListModel<Point> listModel;
 
     private JTextField curveStepsFiield;
+
     private JButton makeCurveButton;
+    private JButton cancelButton;
+    private JButton drawButton;
+
+    JTextField scaleXField;
+    JTextField scaleYField;
+
+    JTextField moveYField;
+    JTextField moveXField;
+
+    JTextField rotateField;
+
+
     private boolean drawCurve;
 
 
@@ -93,18 +106,18 @@ public class MakeCurveDialog extends JDialog {
                     for (Point p : selectedPoints) {
                         g.fillOval(p.x - 5, p.y - 5, 10, 10);
                     }
-                    if(selectedPoints.size() > 1){
+                    if (selectedPoints.size() > 1) {
                         g.setColor(Color.RED);
                         Point prev = selectedPoints.get(0);
                         for (int i = 1; i < selectedPoints.size(); i++) {
                             Point current = selectedPoints.get(i);
                             g.drawLine(prev.x, prev.y, current.x, current.y);
-                            prev = current ;
+                            prev = current;
                         }
                     }
-                    if(drawCurve && selectedPoints.size() >= 2){
+                    if (drawCurve && selectedPoints.size() >= 2) {
                         g.setColor(Color.BLUE);
-                        bezierDrawer.drawBezier(g,getPoints(),parseIntField(curveStepsFiield));
+                        bezierDrawer.drawBezier(g, getPoints(), parseIntField(curveStepsFiield));
                     }
                 } else {
                     g.setColor(Color.WHITE);
@@ -119,9 +132,9 @@ public class MakeCurveDialog extends JDialog {
         pointsList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 1){
+                if (e.getClickCount() == 1) {
                     int index = pointsList.locationToIndex(e.getPoint());
-                    if(index == 1 || !pointsList.getCellBounds(index, index).contains((e.getPoint()))){
+                    if (index == 1 || !pointsList.getCellBounds(index, index).contains((e.getPoint()))) {
                         pointsList.clearSelection();
                     }
                 }
@@ -134,11 +147,11 @@ public class MakeCurveDialog extends JDialog {
                 if (image != null) {
                     int selectedIndex = pointsList.getSelectedIndex();
 
-                    if(selectedIndex != -1){
+                    if (selectedIndex != -1) {
                         Point p = selectedPoints.get(selectedIndex);
                         p.setLocation(e.getPoint());
                         listModel.set(selectedIndex, p);
-                    }else {
+                    } else {
                         selectedPoints.add(e.getPoint());
                         listModel.addElement(e.getPoint());
                     }
@@ -165,15 +178,22 @@ public class MakeCurveDialog extends JDialog {
     }
 
     private JPanel getButtonpanel() {
-        var panel = new JPanel();
+        var panel = new JPanel(new GridLayout(4, 1, 20, 20));
 
-        JButton okButton = new JButton("Narysuj");
-        JButton cancelButton = new JButton("Anuluj");
+        curveStepsFiield = new JTextField("100");
+        makeCurveButton = new JButton("Narysuj Krzywą");
+        cancelButton = new JButton("Zakończ");
+
+        makeCurveButton.addActionListener(e -> {
+            drawCurve = true;
+            repaint();
+        });
 
         cancelButton.addActionListener(e -> dispose());
-        okButton.addActionListener(e -> getPoints());
 
-        panel.add(okButton);
+        panel.add(new JLabel("Podaj dokładność krzywej"));
+        panel.add(curveStepsFiield);
+        panel.add(makeCurveButton);
         panel.add(cancelButton);
 
         return panel;
@@ -184,7 +204,7 @@ public class MakeCurveDialog extends JDialog {
 
         pointsList.setCellRenderer(new PointListRenderer());
         JScrollPane scrollPane = new JScrollPane(pointsList);
-        panel.add(scrollPane,BorderLayout.CENTER);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
 
         JButton editPointButton = new JButton("Edutuj punkt");
@@ -248,22 +268,23 @@ public class MakeCurveDialog extends JDialog {
             return this;
         }
     }
+
     private JPanel getPointManipulationPanel() {
         var finalpanel = new JPanel(new GridLayout(1, 2));
 
 
-        var manipulationPanel = new JPanel(new GridLayout(3, 3, 10, 10));
+        var manipulationPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         JButton scaleButton = new JButton("Skaluj");
-        JTextField scaleXField = new JTextField();
-        JTextField scaleYField = new JTextField();
+        scaleXField = new JTextField();
+        scaleYField = new JTextField();
 
         JButton moveButton = new JButton("Przesuń");
-        JTextField moveXField = new JTextField();
-        JTextField moveYField = new JTextField();
+        moveXField = new JTextField();
+        moveYField = new JTextField();
 
         JButton rotateButton = new JButton("Obróć");
-        JTextField rotateXField = new JTextField();
-        JTextField rotateYField = new JTextField();
+        rotateField =new JTextField();
+
 
         manipulationPanel.add(scaleButton);
         manipulationPanel.add(scaleXField);
@@ -274,44 +295,61 @@ public class MakeCurveDialog extends JDialog {
         manipulationPanel.add(moveYField);
 
         manipulationPanel.add(rotateButton);
-        manipulationPanel.add(rotateXField);
-        manipulationPanel.add(rotateYField);
+        manipulationPanel.add(rotateField);
+        manipulationPanel.add(new JLabel(""));
+
+
+        scaleButton.addActionListener(e -> setScale());
+        moveButton.addActionListener(e -> dispose());
+        rotateButton.addActionListener(e -> dispose());
 
         var matrixPanel = new JPanel(new GridLayout(3, 3));
 
-        var curvePanel = new JPanel(new GridLayout(1, 2));
-
-        makeCurveButton = new JButton("Narysuj Krzywą");
-        curveStepsFiield = new JTextField("100");
-
-        curvePanel.add(makeCurveButton);
-        curvePanel.add(curveStepsFiield);
-
-        makeCurveButton.addActionListener(e -> {
-            drawCurve = true;
-            repaint();
-        });
-
 
         finalpanel.add(manipulationPanel);
-//        finalpanel.add(matrixPanel);
-        finalpanel.add(curvePanel);
+        finalpanel.add(matrixPanel);
 
         return finalpanel;
     }
 
-    private Integer parseIntField(JTextField field){
-            try {
-                return Integer.parseInt(field.getText());
-            } catch (NumberFormatException e) {
-                return null;
-            }
+    private void setScale() {
+        double xValue = parseDoubleField(scaleXField);
+        double yValue = parseDoubleField(scaleYField);
+        double[][] scalematrix = createScaleMatrix(xValue,yValue);
+
+
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(scalematrix, getPoints());
+
+       setSelectedPoints(newPoints);
+       repaint();
+
+    }
+
+    private double[][] createScaleMatrix(double xValue, double yValue){
+        return new double[][]{
+                {xValue, 0,      0},
+                {0,      yValue, 0},
+                {0,      0,      1}
+        };
+    }
+
+    private double parseDoubleField(JTextField field) {
+        return Double.parseDouble(field.getText());
+    }
+
+    private Integer parseIntField(JTextField field) {
+        try {
+            return Integer.parseInt(field.getText());
+        } catch (NumberFormatException e) {
+            return null;
         }
+    }
 
     public List<Point> getPoints() {
-//        for (Point points : selectedPoints) {
-//            System.out.println(points);
-//        }
         return selectedPoints;
+    }
+
+    public void setSelectedPoints(List<Point> selectedPoints) {
+        this.selectedPoints = selectedPoints;
     }
 }
