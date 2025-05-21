@@ -352,10 +352,13 @@ public class MakeCurveDialog extends JDialog {
 
         updateMatrixDisplay(scalematrix);
         List<Point> newPoints = bezierDrawer.calculateNewPoints(scalematrix, getPoints());
+
         setSelectedPoints(newPoints);
+        updateListModel(newPoints);
         repaint();
 
     }
+
 
     private void setMove() {
         double xValue = parseDoubleField(moveXField);
@@ -364,6 +367,8 @@ public class MakeCurveDialog extends JDialog {
 
         updateMatrixDisplay(moveMatrix);
         List<Point> newPoints = bezierDrawer.calculateNewPoints(moveMatrix, getPoints());
+
+        updateListModel(newPoints);
         setSelectedPoints(newPoints);
         repaint();
     }
@@ -374,10 +379,17 @@ public class MakeCurveDialog extends JDialog {
 
         updateMatrixDisplay(rotateMatrix);
         List<Point> newPoints = bezierDrawer.calculateNewPoints(rotateMatrix, getPoints());
+
+        updateListModel(newPoints);
         setSelectedPoints(newPoints);
         repaint();
     }
-
+    private void updateListModel(List<Point> points){
+        listModel.clear();
+        for(Point p : points){
+            listModel.addElement(p);
+        }
+    }
     private void updateMatrixDisplay(double[][] matrix) {
         StringBuilder sb = new StringBuilder();
         DecimalFormat df = new DecimalFormat();
