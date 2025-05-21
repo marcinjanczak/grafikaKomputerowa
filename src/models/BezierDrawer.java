@@ -7,7 +7,7 @@ import java.util.List;
 public class BezierDrawer {
     public void drawBezier(Graphics g, List<Point> controlPoints, Integer steps) {
         if (controlPoints.size() < 2) return;
-        System.out.println(steps);
+//        System.out.println(steps);
 
         Point previous = null;
         for (int i = 0; i <= steps; i++) {

@@ -62,6 +62,7 @@ public class MakeCurveDialog extends JDialog {
         gbc.gridheight = 9;
         gbc.weightx = 0.9;
         gbc.weighty = 0.9;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
 
         add(imagePanel, gbc);
 
@@ -91,52 +92,65 @@ public class MakeCurveDialog extends JDialog {
         add(buttonPanel, gbc);
 
         pack();
+//        autoAdjustWindowSize();
+        if (image != null) {
+            int width = Math.max(1000, image.getWidth() + 400);
+            int height = Math.max(800, image.getHeight() + 200);
+            setSize(width, height);
+        }
         setLocationRelativeTo(parent);
-        autoAdjustWindowSize();
-
     }
 
     private JPanel getMainPanel(JFrame parent) {
         this.image = ((MainFrame) parent).getLeftPanel().getModel().getImage();
 
         JPanel panel = new JPanel() {
+            private int imgX = 0;
+            private int imgY = 0;
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 if (image != null) {
-                    // Oblicz proporcje zachowujące aspect ratio
-                    double widthRatio = (double)getWidth() / image.getWidth();
-                    double heightRatio = (double)getHeight() / image.getHeight();
-                    double ratio = Math.min(widthRatio, heightRatio);
 
-                    int scaledWidth = (int)(image.getWidth() * ratio);
-                    int scaledHeight = (int)(image.getHeight() * ratio);
+                    ///  Obliczanie środka panelu.
+                    imgX = (getWidth() - image.getWidth()) / 2;
+                    imgY = (getHeight() - image.getHeight()) / 2;
 
-                    // Wyśrodkuj obraz
-                    int x = (getWidth() - scaledWidth) / 2;
-                    int y = (getHeight() - scaledHeight) / 2;
+                    ///  Ustawienie tła obrazu na kolor szary
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(0, 0, getWidth(), getHeight());
 
-                    g.drawImage(image, x, y, scaledWidth, scaledHeight, this);
-                    // Rysowanie obrazu
-//                    g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+                    g.drawImage(image, imgX, imgY, this);
 
-                    // Rysowanie punktów
+                    /// Rysowanie punktów
                     g.setColor(Color.RED);
                     for (Point p : selectedPoints) {
-                        g.fillOval(p.x - 5, p.y - 5, 10, 10);
+                        if (isPointInImage(p)) {
+                            g.fillOval(imgX + p.x  - 5, imgY + p.y - 5, 10, 10);
+                        }
                     }
+                    ///  Rysowanie punktów między punktami jeżeli ich ilość jest większa od 2
                     if (selectedPoints.size() > 1) {
                         g.setColor(Color.RED);
                         Point prev = selectedPoints.get(0);
                         for (int i = 1; i < selectedPoints.size(); i++) {
                             Point current = selectedPoints.get(i);
-                            g.drawLine(prev.x, prev.y, current.x, current.y);
+                            g.drawLine(imgX + prev.x, imgY + prev.y, imgX + current.x, imgY + current.y);
                             prev = current;
                         }
                     }
+                    ///  Rysowanie lini krzywej beziera na podstawie wyliconych kolejno punktów.
                     if (drawCurve && selectedPoints.size() >= 2) {
                         g.setColor(Color.BLUE);
                         bezierDrawer.drawBezier(g, getPoints(), parseIntField(curveStepsFiield));
+                    }
+                    ///  Usuwanie punktów które znajdują się poza obrazem.
+                    for (Point p : new ArrayList<>(selectedPoints)) {
+                        if (!isPointInImage(p)) {
+                            selectedPoints.remove(p);
+                            listModel.removeElement(p);
+                        }
                     }
                 } else {
                     g.setColor(Color.WHITE);
@@ -145,16 +159,41 @@ public class MakeCurveDialog extends JDialog {
                     g.drawString("Wczytaj najpierw obraz!", 50, 50);
                 }
             }
-            @Override
-            public Dimension getPreferredSize() {
-                if (image != null) {
-                    // Zwróć oryginalny rozmiar obrazu (panel będzie scrollowany jeśli za duży)
-                    return new Dimension(image.getWidth(), image.getHeight());
-                }
-                return new Dimension(600, 400); // Domyślny rozmiar
+
+            private boolean isPointInImage(Point p) {
+                return image != null && p.x >= 0 && p.y >= 0
+                        && p.x < image.getWidth() && p.y < image.getHeight();
             }
         };
-//            adjustWindowSize(image);
+
+        /// Ustawiamy dokładny rozmiar panelu równy rozmiarowi obrazu
+//        if (image != null) {
+//            panel.setSize(image.getWidth(), image.getHeight());
+//        }
+
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (image != null) {
+                    int xOnImage  = e.getX() - (panel.getWidth() - image.getWidth()) / 2;
+                    int yOnImage  = e.getX() - (panel.getHeight() - image.getHeight()) / 2;
+
+                    if(xOnImage >= 0 && yOnImage >= 0 && xOnImage <image.getWidth() && yOnImage <image.getHeight()){
+                        int selectedIndex = pointsList.getSelectedIndex();
+                        if (selectedIndex != -1) {
+                            Point p = selectedPoints.get(selectedIndex);
+                            p.setLocation(xOnImage,yOnImage);
+                            listModel.set(selectedIndex, p);
+                        } else {
+                            Point newPoint = new Point(xOnImage,yOnImage);
+                            selectedPoints.add(newPoint);
+                            listModel.addElement(newPoint);
+                        }
+                        panel.repaint();
+                    }
+                }
+            }
+        });
 
         pointsList.addMouseListener(new MouseAdapter() {
             @Override
@@ -167,48 +206,9 @@ public class MakeCurveDialog extends JDialog {
                 }
             }
         });
-        // Obsługa myszy
-        panel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (image != null) {
-                    int selectedIndex = pointsList.getSelectedIndex();
-
-                    if (selectedIndex != -1) {
-                        Point p = selectedPoints.get(selectedIndex);
-                        p.setLocation(e.getPoint());
-                        listModel.set(selectedIndex, p);
-                    } else {
-                        selectedPoints.add(e.getPoint());
-                        listModel.addElement(e.getPoint());
-                    }
-//                    selectedPoints.add(e.getPoint());
-//                    listModel.addElement(e.getPoint());
-                    panel.repaint();
-
-                }
-            }
-        });
         return panel;
     }
 
-    public void autoAdjustWindowSize() {
-        if (image != null) {
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-
-            Dimension currentSize = getContentPane().getSize();
-            Dimension imagePanelSize = new Dimension(
-                    (int)(currentSize.width * 0.75),
-                    (int)(currentSize.height * 0.75)
-            );
-            if (imageWidth > imagePanelSize.width || imageHeight > imagePanelSize.height) {
-                int newWidth = Math.max(1000, (int)(imageWidth / 0.75) + 300);
-                int newHeight = Math.max(800, (int)(imageHeight / 0.75) + 300);
-                setSize(newWidth, newHeight);
-            }
-        }
-    }
 
     private JPanel getButtonpanel() {
         var panel = new JPanel(new GridLayout(4, 1, 20, 20));
@@ -340,10 +340,10 @@ public class MakeCurveDialog extends JDialog {
 
         matrixPanel.setBorder(BorderFactory.createTitledBorder("Macierz transformacji"));
 
-        matrixDisplay = new JTextArea(3,20);
+        matrixDisplay = new JTextArea(3, 20);
         matrixDisplay.setEditable(false);
         matrixDisplay.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        matrixPanel.add(new JScrollPane(matrixDisplay),BorderLayout.CENTER);
+        matrixPanel.add(new JScrollPane(matrixDisplay), BorderLayout.CENTER);
 
         finalpanel.add(manipulationPanel);
         finalpanel.add(matrixPanel);
@@ -383,7 +383,8 @@ public class MakeCurveDialog extends JDialog {
         setSelectedPoints(newPoints);
         repaint();
     }
-    private void updateMatrixDisplay(double[][] matrix){
+
+    private void updateMatrixDisplay(double[][] matrix) {
         StringBuilder sb = new StringBuilder();
         DecimalFormat df = new DecimalFormat();
 
