@@ -41,9 +41,8 @@ public class MakeCurveDialog extends JDialog {
 
     public MakeCurveDialog(JFrame parent) {
         super(parent, "Wybierz punkty", true);
-        setSize(1000, 800);
-        setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
+        setPreferredSize(new Dimension(1000, 800));
 
         listModel = new DefaultListModel<>();
         pointsList = new JList<>(listModel);
@@ -59,17 +58,17 @@ public class MakeCurveDialog extends JDialog {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 9; // Zajmuje 3/4 szerokości
-        gbc.gridheight = 9; // Zajmuje 3/4 wysokości
-        gbc.weightx = 0.9; // Waga szerokości
-        gbc.weighty = 0.9; // Waga wysokości
+        gbc.gridwidth = 9;
+        gbc.gridheight = 9;
+        gbc.weightx = 0.9;
+        gbc.weighty = 0.9;
 
         add(imagePanel, gbc);
 
         gbc.gridx = 9;
         gbc.gridy = 0;
-        gbc.gridwidth = 1; // Zajmuje 1/4 szerokości
-        gbc.gridheight = 9; // Zajmuje 3/4 wysokości
+        gbc.gridwidth = 1;
+        gbc.gridheight = 9;
         gbc.weightx = 0.10;
         gbc.weighty = 0.9;
         add(pointsArea, gbc);
@@ -90,6 +89,11 @@ public class MakeCurveDialog extends JDialog {
         gbc.weightx = 0.1;
         gbc.weighty = 0.1;
         add(buttonPanel, gbc);
+
+        pack();
+        setLocationRelativeTo(parent);
+        autoAdjustWindowSize();
+
     }
 
     private JPanel getMainPanel(JFrame parent) {
@@ -100,8 +104,21 @@ public class MakeCurveDialog extends JDialog {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 if (image != null) {
+                    // Oblicz proporcje zachowujące aspect ratio
+                    double widthRatio = (double)getWidth() / image.getWidth();
+                    double heightRatio = (double)getHeight() / image.getHeight();
+                    double ratio = Math.min(widthRatio, heightRatio);
+
+                    int scaledWidth = (int)(image.getWidth() * ratio);
+                    int scaledHeight = (int)(image.getHeight() * ratio);
+
+                    // Wyśrodkuj obraz
+                    int x = (getWidth() - scaledWidth) / 2;
+                    int y = (getHeight() - scaledHeight) / 2;
+
+                    g.drawImage(image, x, y, scaledWidth, scaledHeight, this);
                     // Rysowanie obrazu
-                    g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+//                    g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 
                     // Rysowanie punktów
                     g.setColor(Color.RED);
@@ -127,6 +144,14 @@ public class MakeCurveDialog extends JDialog {
                     g.setColor(Color.BLACK);
                     g.drawString("Wczytaj najpierw obraz!", 50, 50);
                 }
+            }
+            @Override
+            public Dimension getPreferredSize() {
+                if (image != null) {
+                    // Zwróć oryginalny rozmiar obrazu (panel będzie scrollowany jeśli za duży)
+                    return new Dimension(image.getWidth(), image.getHeight());
+                }
+                return new Dimension(600, 400); // Domyślny rozmiar
             }
         };
 //            adjustWindowSize(image);
@@ -164,19 +189,25 @@ public class MakeCurveDialog extends JDialog {
                 }
             }
         });
-
         return panel;
     }
 
-    public void adjustWindowSize(BufferedImage image) {
-        if (image == null) {
-            return;
-        }
-        int newWidth = Math.max(getWidth(), image.getWidth() + 300);
+    public void autoAdjustWindowSize() {
+        if (image != null) {
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
 
-        int newHeight = Math.max(getHeight(), image.getHeight() + 300);
-        setSize(newWidth, newHeight);
-        setLocationRelativeTo(null);
+            Dimension currentSize = getContentPane().getSize();
+            Dimension imagePanelSize = new Dimension(
+                    (int)(currentSize.width * 0.75),
+                    (int)(currentSize.height * 0.75)
+            );
+            if (imageWidth > imagePanelSize.width || imageHeight > imagePanelSize.height) {
+                int newWidth = Math.max(1000, (int)(imageWidth / 0.75) + 300);
+                int newHeight = Math.max(800, (int)(imageHeight / 0.75) + 300);
+                setSize(newWidth, newHeight);
+            }
+        }
     }
 
     private JPanel getButtonpanel() {
