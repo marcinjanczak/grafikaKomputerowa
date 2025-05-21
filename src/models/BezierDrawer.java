@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BezierDrawer {
-    public void drawBezier(Graphics g, List<Point> controlPoints, Integer steps) {
+    public void drawBezier(Graphics g, List<Point> controlPoints, Integer steps, int offsetX, int offsetY) {
         if (controlPoints.size() < 2) return;
 //        System.out.println(steps);
 
@@ -16,7 +16,8 @@ public class BezierDrawer {
 //            System.out.println(current.x+" "+ current.y);
 
             if (previous != null) {
-                g.drawLine(previous.x, previous.y, current.x, current.y);
+                g.drawLine(previous.x + offsetX, previous.y + offsetY,
+                        current.x + offsetX, current.y + offsetY);
             }
             previous = current;
 //            System.out.println(previous.x + " "+ previous.y);

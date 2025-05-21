@@ -121,36 +121,31 @@ public class MakeCurveDialog extends JDialog {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(0, 0, getWidth(), getHeight());
 
+                    /// Rysowanie obrazu na srodku panelu
                     g.drawImage(image, imgX, imgY, this);
 
-                    /// Rysowanie punktów
-                    g.setColor(Color.RED);
-                    for (Point p : selectedPoints) {
-                        if (isPointInImage(p)) {
-                            g.fillOval(imgX + p.x  - 5, imgY + p.y - 5, 10, 10);
-                        }
-                    }
                     ///  Rysowanie punktów między punktami jeżeli ich ilość jest większa od 2
                     if (selectedPoints.size() > 1) {
                         g.setColor(Color.RED);
                         Point prev = selectedPoints.get(0);
                         for (int i = 1; i < selectedPoints.size(); i++) {
                             Point current = selectedPoints.get(i);
-                            g.drawLine(imgX + prev.x, imgY + prev.y, imgX + current.x, imgY + current.y);
+                            g.drawLine(imgX + prev.x, imgY + prev.y,
+                                    imgX + current.x, imgY + current.y);
                             prev = current;
                         }
                     }
+                    /// Rysowanie punktów
+                    g.setColor(Color.RED);
+                    for (Point p : selectedPoints) {
+                        g.fillOval(imgX + p.x  - 5, imgY + p.y - 5, 10, 10);
+                    }
+
                     ///  Rysowanie lini krzywej beziera na podstawie wyliconych kolejno punktów.
                     if (drawCurve && selectedPoints.size() >= 2) {
                         g.setColor(Color.BLUE);
-                        bezierDrawer.drawBezier(g, getPoints(), parseIntField(curveStepsFiield));
-                    }
-                    ///  Usuwanie punktów które znajdują się poza obrazem.
-                    for (Point p : new ArrayList<>(selectedPoints)) {
-                        if (!isPointInImage(p)) {
-                            selectedPoints.remove(p);
-                            listModel.removeElement(p);
-                        }
+                        bezierDrawer.drawBezier(g, getPoints(), parseIntField(curveStepsFiield),
+                                                imgX,imgY);
                     }
                 } else {
                     g.setColor(Color.WHITE);
@@ -159,7 +154,6 @@ public class MakeCurveDialog extends JDialog {
                     g.drawString("Wczytaj najpierw obraz!", 50, 50);
                 }
             }
-
             private boolean isPointInImage(Point p) {
                 return image != null && p.x >= 0 && p.y >= 0
                         && p.x < image.getWidth() && p.y < image.getHeight();
@@ -176,7 +170,7 @@ public class MakeCurveDialog extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 if (image != null) {
                     int xOnImage  = e.getX() - (panel.getWidth() - image.getWidth()) / 2;
-                    int yOnImage  = e.getX() - (panel.getHeight() - image.getHeight()) / 2;
+                    int yOnImage  = e.getY() - (panel.getHeight() - image.getHeight()) / 2;
 
                     if(xOnImage >= 0 && yOnImage >= 0 && xOnImage <image.getWidth() && yOnImage <image.getHeight()){
                         int selectedIndex = pointsList.getSelectedIndex();
