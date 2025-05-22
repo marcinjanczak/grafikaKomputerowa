@@ -44,7 +44,6 @@ public class MenuBar extends JMenuBar {
     private final JMenuItem statisticFilter;
     private final JMenuItem splotFilter;
     private final JMenuItem gradientFilter;
-
     private final JMenuItem makeCurve;
 
     public MenuBar() {
@@ -146,8 +145,8 @@ public class MenuBar extends JMenuBar {
         add(editPanelMenu);
         add(transformationsPanelMenu);
         add(dilatationsPanelMenu);
-        add(curvePanelMenu);
         add(filtersPanelManu);
+        add(curvePanelMenu);
     }
 
     public JMenuItem getOpenFileMenuItem() {

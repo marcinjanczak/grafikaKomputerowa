@@ -173,6 +173,7 @@ public class MainFrame extends JFrame {
         dialog.setVisible(true);
 
 
+
     }
 
     private void changeContrastAndBrightess() {

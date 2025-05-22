@@ -61,8 +61,8 @@ public class BezierDrawer {
         double radians = Math.toRadians(rotateValue);
         double cos = Math.cos(radians);
         double sin = Math.sin(radians);
-        System.out.println(cos);
-        System.out.println(sin);
+//        System.out.println(cos);
+//        System.out.println(sin);
         return new double[][]{
                 {cos,    -sin,      0},
                 {sin,    cos,      0},

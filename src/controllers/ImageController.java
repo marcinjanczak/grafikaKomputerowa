@@ -294,4 +294,11 @@ public class ImageController {
         rightPanel.setModel(model);
         rightPanel.repaint();
     }
+    public void makeCurve(){
+        if(leftPanel.getModel() == null || leftPanel.getModel().getImage() == null){
+            JOptionPane.showMessageDialog(mainFrame, "Brak załadowanego obrazu!","Błąd",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+//        var
+    }
 }

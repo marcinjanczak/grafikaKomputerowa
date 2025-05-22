@@ -1,6 +1,7 @@
 package views.dialogs;
 
 import models.BezierDrawer;
+import models.ImageModel;
 import views.MainFrame;
 
 import javax.swing.*;
@@ -13,29 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MakeCurveDialog extends JDialog {
+    JTextField scaleXField;
+    JTextField scaleYField;
+    JTextField moveYField;
+    JTextField moveXField;
+    JTextField rotateField;
     private BufferedImage image;
     private BezierDrawer bezierDrawer;
-
     private JList<Point> pointsList;
     private List<Point> selectedPoints = new ArrayList<>();
     private DefaultListModel<Point> listModel;
-
     private JTextField curveStepsFiield;
     private JTextArea matrixDisplay;
-
     private JButton makeCurveButton;
     private JButton cancelButton;
-    private JButton drawButton;
-
-    JTextField scaleXField;
-    JTextField scaleYField;
-
-    JTextField moveYField;
-    JTextField moveXField;
-
-    JTextField rotateField;
-
-
+    private JButton applyButton;
     private boolean drawCurve;
 
 
@@ -138,14 +131,14 @@ public class MakeCurveDialog extends JDialog {
                     /// Rysowanie punktów
                     g.setColor(Color.RED);
                     for (Point p : selectedPoints) {
-                        g.fillOval(imgX + p.x  - 5, imgY + p.y - 5, 10, 10);
+                        g.fillOval(imgX + p.x - 5, imgY + p.y - 5, 10, 10);
                     }
 
                     ///  Rysowanie lini krzywej beziera na podstawie wyliconych kolejno punktów.
                     if (drawCurve && selectedPoints.size() >= 2) {
                         g.setColor(Color.BLUE);
                         bezierDrawer.drawBezier(g, getPoints(), parseIntField(curveStepsFiield),
-                                                imgX,imgY);
+                                imgX, imgY);
                     }
                 } else {
                     g.setColor(Color.WHITE);
@@ -154,32 +147,27 @@ public class MakeCurveDialog extends JDialog {
                     g.drawString("Wczytaj najpierw obraz!", 50, 50);
                 }
             }
+
             private boolean isPointInImage(Point p) {
                 return image != null && p.x >= 0 && p.y >= 0
                         && p.x < image.getWidth() && p.y < image.getHeight();
             }
         };
-
-        /// Ustawiamy dokładny rozmiar panelu równy rozmiarowi obrazu
-//        if (image != null) {
-//            panel.setSize(image.getWidth(), image.getHeight());
-//        }
-
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (image != null) {
-                    int xOnImage  = e.getX() - (panel.getWidth() - image.getWidth()) / 2;
-                    int yOnImage  = e.getY() - (panel.getHeight() - image.getHeight()) / 2;
+                    int xOnImage = e.getX() - (panel.getWidth() - image.getWidth()) / 2;
+                    int yOnImage = e.getY() - (panel.getHeight() - image.getHeight()) / 2;
 
-                    if(xOnImage >= 0 && yOnImage >= 0 && xOnImage <image.getWidth() && yOnImage <image.getHeight()){
+                    if (xOnImage >= 0 && yOnImage >= 0 && xOnImage < image.getWidth() && yOnImage < image.getHeight()) {
                         int selectedIndex = pointsList.getSelectedIndex();
                         if (selectedIndex != -1) {
                             Point p = selectedPoints.get(selectedIndex);
-                            p.setLocation(xOnImage,yOnImage);
+                            p.setLocation(xOnImage, yOnImage);
                             listModel.set(selectedIndex, p);
                         } else {
-                            Point newPoint = new Point(xOnImage,yOnImage);
+                            Point newPoint = new Point(xOnImage, yOnImage);
                             selectedPoints.add(newPoint);
                             listModel.addElement(newPoint);
                         }
@@ -205,11 +193,12 @@ public class MakeCurveDialog extends JDialog {
 
 
     private JPanel getButtonpanel() {
-        var panel = new JPanel(new GridLayout(4, 1, 20, 20));
+        var panel = new JPanel(new GridLayout(5, 1, 20, 20));
 
         curveStepsFiield = new JTextField("100");
         makeCurveButton = new JButton("Narysuj Krzywą");
         cancelButton = new JButton("Zakończ");
+        applyButton = new JButton("Zastosuj");
 
         makeCurveButton.addActionListener(e -> {
             drawCurve = true;
@@ -217,11 +206,28 @@ public class MakeCurveDialog extends JDialog {
         });
 
         cancelButton.addActionListener(e -> dispose());
+        applyButton.addActionListener(e -> {
+            // Tworzymy kopię obrazu z naniesionymi krzywymi
+            BufferedImage resultImage = createImageWithCurves();
+
+            // Pobieramy referencję do MainFrame
+            MainFrame mainFrame = (MainFrame)SwingUtilities.getWindowAncestor(this);
+
+            // Ustawiamy nowy model z obrazem w lewym panelu
+            mainFrame.getRightPanel().setModel(new ImageModel(resultImage));
+            mainFrame.getRightPanel().repaint();
+
+            dispose(); // Zamykamy dialog
+        });
 
         panel.add(new JLabel("Podaj dokładność krzywej"));
         panel.add(curveStepsFiield);
         panel.add(makeCurveButton);
         panel.add(cancelButton);
+        panel.add(applyButton);
+
+
+
 
         return panel;
     }
@@ -283,22 +289,8 @@ public class MakeCurveDialog extends JDialog {
         return panel;
     }
 
-    private static class PointListRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(
-                JList<?> list, Object value, int index,
-                boolean isSelected, boolean cellHasFocus
-        ) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            Point p = (Point) value;
-            setText(String.format("P%d (%d, %d)", index, p.x, p.y));
-            return this;
-        }
-    }
-
     private JPanel getPointManipulationPanel() {
         var finalpanel = new JPanel(new GridLayout(1, 2));
-
 
         var manipulationPanel = new JPanel(new GridLayout(3, 6, 10, 10));
         JButton scaleButton = new JButton("Skaluj");
@@ -359,7 +351,6 @@ public class MakeCurveDialog extends JDialog {
 
     }
 
-
     private void setMove() {
         double xValue = parseDoubleField(moveXField);
         double yValue = parseDoubleField(moveYField);
@@ -384,12 +375,14 @@ public class MakeCurveDialog extends JDialog {
         setSelectedPoints(newPoints);
         repaint();
     }
-    private void updateListModel(List<Point> points){
+
+    private void updateListModel(List<Point> points) {
         listModel.clear();
-        for(Point p : points){
+        for (Point p : points) {
             listModel.addElement(p);
         }
     }
+
     private void updateMatrixDisplay(double[][] matrix) {
         StringBuilder sb = new StringBuilder();
         DecimalFormat df = new DecimalFormat();
@@ -417,11 +410,64 @@ public class MakeCurveDialog extends JDialog {
         }
     }
 
+    private BufferedImage createImageWithCurves() {
+        if (image == null) return null;
+        BufferedImage result = new BufferedImage(
+                image.getWidth(),
+                image.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
+
+        // Rysujemy oryginalny obraz
+        Graphics2D g2d = result.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+
+        // Rysujemy linie łączące punkty kontrolne
+        if (selectedPoints.size() > 1) {
+            g2d.setColor(Color.RED);
+            Point prev = selectedPoints.get(0);
+            for (int i = 1; i < selectedPoints.size(); i++) {
+                Point current = selectedPoints.get(i);
+                g2d.drawLine(prev.x, prev.y, current.x, current.y);
+                prev = current;
+            }
+        }
+
+        // Rysujemy punkty kontrolne
+        g2d.setColor(Color.RED);
+        for (Point p : selectedPoints) {
+            g2d.fillOval(p.x - 5, p.y - 5, 10, 10);
+        }
+
+        // Rysujemy krzywą Béziera jeśli jest włączona
+        if (drawCurve && selectedPoints.size() >= 2) {
+            g2d.setColor(Color.BLUE);
+            bezierDrawer.drawBezier(g2d, getPoints(), parseIntField(curveStepsFiield), 0, 0);
+        }
+
+        g2d.dispose();
+        return result;
+    }
+
+
     public List<Point> getPoints() {
         return selectedPoints;
     }
 
     public void setSelectedPoints(List<Point> selectedPoints) {
         this.selectedPoints = selectedPoints;
+    }
+
+    private static class PointListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(
+                JList<?> list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus
+        ) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            Point p = (Point) value;
+            setText(String.format("P%d (%d, %d)", index, p.x, p.y));
+            return this;
+        }
     }
 }
