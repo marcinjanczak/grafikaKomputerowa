@@ -1,51 +1,62 @@
 package models;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BezierDrawer {
     public void drawBezier(Graphics g, List<Point> controlPoints, Integer steps, int offsetX, int offsetY) {
         if (controlPoints.size() < 2) return;
-//        System.out.println(steps);
 
-        Point previous = null;
+        Point2D.Double previous = null;
         for (int i = 0; i <= steps; i++) {
             double t = i / (double) steps;
-            Point current = calculateBezierPoint(controlPoints, t);
-//            System.out.println(current.x+" "+ current.y);
+            Point2D.Double current = calculateBezierPoint(controlPoints, t);
 
             if (previous != null) {
-                g.drawLine(previous.x + offsetX, previous.y + offsetY,
-                        current.x + offsetX, current.y + offsetY);
+                int x1 = (int) Math.round(previous.x) + offsetX;
+                int y1 = (int) Math.round(previous.y) + offsetY;
+                int x2 = (int) Math.round(current.x) + offsetX;
+                int y2 = (int) Math.round(current.y) + offsetY;
+
+                g.drawLine(x1,y1,x2,y2);
             }
             previous = current;
-//            System.out.println(previous.x + " "+ previous.y);
         }
     }
 
-    private Point calculateBezierPoint(List<Point> pointList, double t) {
+    private Point2D.Double calculateBezierPoint(List<Point> pointList, double t) {
         if (pointList.size() < 2) {
-            return new Point(0, 0);
+            return new Point2D.Double(0, 0);
         }
 
-        Point[] tmp = new Point[pointList.size()];
+        Point2D.Double[] tmp = new Point2D.Double[pointList.size()];
         for (int i = 0; i < pointList.size(); i++) {
-            tmp[i] = new Point(pointList.get(i));
+            tmp[i] = new Point2D.Double(pointList.get(i).x,pointList.get(i).y);
         }
         for (int k = pointList.size() - 1; k > 0; k--) {
             for (int i = 0; i < k; i++) {
                 double x = (1 - t) * tmp[i].x + t * tmp[i + 1].x;
                 double y = (1 - t) * tmp[i].y + t * tmp[i + 1].y;
-                tmp[i] = new Point((int) Math.round(x), (int) Math.round(y));
+                tmp[i] = new Point2D.Double(x,y);
             }
         }
         return tmp[0];
     }
-    public Double[][] calculateMatrix(){
-        Double[][] matrix = new Double[3][3];
+    public double[][] multiplyMatrices(double[][] A, double[][] B) {
+        double[][] result = new double[3][3];
 
-        return matrix;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++) {
+                    result[i][j] += A[i][k] * B[k][j];
+                }
+            }
+        }
+
+        return result;
     }
     public List<Point> calculateNewPoints(double[][] matrix, List<Point> pointList){
         List<Point> newPoints = new ArrayList<>();
@@ -61,8 +72,7 @@ public class BezierDrawer {
         double radians = Math.toRadians(rotateValue);
         double cos = Math.cos(radians);
         double sin = Math.sin(radians);
-//        System.out.println(cos);
-//        System.out.println(sin);
+
         return new double[][]{
                 {cos,    -sin,      0},
                 {sin,    cos,      0},

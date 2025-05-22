@@ -22,13 +22,16 @@ public class MakeCurveDialog extends JDialog {
     private BufferedImage image;
     private BezierDrawer bezierDrawer;
     private JList<Point> pointsList;
+    private List<Point> originalPoints = new ArrayList<>();
     private List<Point> selectedPoints = new ArrayList<>();
+    private List<Point> matrixPoints = new ArrayList<>();
     private DefaultListModel<Point> listModel;
     private JTextField curveStepsFiield;
     private JTextArea matrixDisplay;
     private JButton makeCurveButton;
     private JButton cancelButton;
     private JButton applyButton;
+    private double[][] manipulationMatrix;
     private boolean drawCurve;
 
 
@@ -40,6 +43,8 @@ public class MakeCurveDialog extends JDialog {
         listModel = new DefaultListModel<>();
         pointsList = new JList<>(listModel);
         bezierDrawer = new BezierDrawer();
+
+        manipulationMatrix = defaultMatrix();
 
         JPanel imagePanel = getMainPanel(parent);
         JPanel pointsArea = getPointsArea();
@@ -163,14 +168,15 @@ public class MakeCurveDialog extends JDialog {
                     if (xOnImage >= 0 && yOnImage >= 0 && xOnImage < image.getWidth() && yOnImage < image.getHeight()) {
                         int selectedIndex = pointsList.getSelectedIndex();
                         if (selectedIndex != -1) {
-                            Point p = selectedPoints.get(selectedIndex);
+                            Point p = originalPoints.get(selectedIndex);
                             p.setLocation(xOnImage, yOnImage);
                             listModel.set(selectedIndex, p);
                         } else {
                             Point newPoint = new Point(xOnImage, yOnImage);
-                            selectedPoints.add(newPoint);
+                            originalPoints.add(newPoint);
                             listModel.addElement(newPoint);
                         }
+                        selectedPoints = bezierDrawer.calculateNewPoints(manipulationMatrix, originalPoints);
                         panel.repaint();
                     }
                 }
@@ -182,7 +188,7 @@ public class MakeCurveDialog extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
                     int index = pointsList.locationToIndex(e.getPoint());
-                    if (index == 1 || !pointsList.getCellBounds(index, index).contains((e.getPoint()))) {
+                    if (index == -1 || !pointsList.getCellBounds(index, index).contains((e.getPoint()))) {
                         pointsList.clearSelection();
                     }
                 }
@@ -211,7 +217,7 @@ public class MakeCurveDialog extends JDialog {
             BufferedImage resultImage = createImageWithCurves();
 
             // Pobieramy referencję do MainFrame
-            MainFrame mainFrame = (MainFrame)SwingUtilities.getWindowAncestor(this);
+            MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
 
             // Ustawiamy nowy model z obrazem w lewym panelu
             mainFrame.getRightPanel().setModel(new ImageModel(resultImage));
@@ -225,8 +231,6 @@ public class MakeCurveDialog extends JDialog {
         panel.add(makeCurveButton);
         panel.add(cancelButton);
         panel.add(applyButton);
-
-
 
 
         return panel;
@@ -304,7 +308,6 @@ public class MakeCurveDialog extends JDialog {
         JButton rotateButton = new JButton("Obróć");
         rotateField = new JTextField();
 
-
         manipulationPanel.add(scaleButton);
         manipulationPanel.add(scaleXField);
         manipulationPanel.add(scaleYField);
@@ -318,9 +321,18 @@ public class MakeCurveDialog extends JDialog {
         manipulationPanel.add(new JLabel(""));
 
 
-        scaleButton.addActionListener(e -> setScale());
-        moveButton.addActionListener(e -> setMove());
-        rotateButton.addActionListener(e -> setRotate());
+        scaleButton.addActionListener(e -> {
+            setScale();
+            clearManipulationFields();
+        });
+        moveButton.addActionListener(e -> {
+            setMove();
+            clearManipulationFields();
+        });
+        rotateButton.addActionListener(e -> {
+            setRotate();
+            clearManipulationFields();
+        });
 
         var matrixPanel = new JPanel(new BorderLayout());
 
@@ -331,22 +343,44 @@ public class MakeCurveDialog extends JDialog {
         matrixDisplay.setFont(new Font("Monospaced", Font.PLAIN, 14));
         matrixPanel.add(new JScrollPane(matrixDisplay), BorderLayout.CENTER);
 
+        updateMatrixDisplay();
+
         finalpanel.add(manipulationPanel);
         finalpanel.add(matrixPanel);
 
         return finalpanel;
     }
 
+    private void clearManipulationFields() {
+        scaleXField.setText("");
+        scaleYField.setText("");
+
+        moveXField.setText("");
+        moveYField.setText("");
+        rotateField.setText("");
+    }
+
+    private double[][] defaultMatrix() {
+        return new double[][]{
+                {1, 0, 0},
+                {0, 1, 0},
+                {0, 0, 1}
+        };
+    }
+
     private void setScale() {
+
         double xValue = parseDoubleField(scaleXField);
         double yValue = parseDoubleField(scaleYField);
+
         double[][] scalematrix = bezierDrawer.createScaleMatrix(xValue, yValue);
+        manipulationMatrix = bezierDrawer.multiplyMatrices(manipulationMatrix, scalematrix);
+        updateMatrixDisplay();
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(manipulationMatrix, getPoints());
 
-        updateMatrixDisplay(scalematrix);
-        List<Point> newPoints = bezierDrawer.calculateNewPoints(scalematrix, getPoints());
-
-        setSelectedPoints(newPoints);
-        updateListModel(newPoints);
+        selectedPoints.clear();
+        selectedPoints.addAll(newPoints);
+//        updateListModel(newPoints);
         repaint();
 
     }
@@ -356,11 +390,16 @@ public class MakeCurveDialog extends JDialog {
         double yValue = parseDoubleField(moveYField);
         double[][] moveMatrix = bezierDrawer.createMoveMatrix(xValue, yValue);
 
-        updateMatrixDisplay(moveMatrix);
-        List<Point> newPoints = bezierDrawer.calculateNewPoints(moveMatrix, getPoints());
+        manipulationMatrix = bezierDrawer.multiplyMatrices(manipulationMatrix, moveMatrix);
 
-        updateListModel(newPoints);
-        setSelectedPoints(newPoints);
+        updateMatrixDisplay();
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(manipulationMatrix, getPoints());
+
+        selectedPoints.clear();
+        selectedPoints.addAll(newPoints);
+
+//        updateListModel(newPoints);
+//        setSelectedPoints(newPoints);
         repaint();
     }
 
@@ -368,11 +407,16 @@ public class MakeCurveDialog extends JDialog {
         double rotateValue = parseDoubleField(rotateField);
         double[][] rotateMatrix = bezierDrawer.createRotateMatrix(rotateValue);
 
-        updateMatrixDisplay(rotateMatrix);
-        List<Point> newPoints = bezierDrawer.calculateNewPoints(rotateMatrix, getPoints());
+        manipulationMatrix = bezierDrawer.multiplyMatrices(manipulationMatrix, rotateMatrix);
 
-        updateListModel(newPoints);
-        setSelectedPoints(newPoints);
+        updateMatrixDisplay();
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(manipulationMatrix, getPoints());
+
+        selectedPoints.clear();
+        selectedPoints.addAll(newPoints);
+
+//        updateListModel(newPoints);
+//        setSelectedPoints(newPoints);
         repaint();
     }
 
@@ -383,14 +427,14 @@ public class MakeCurveDialog extends JDialog {
         }
     }
 
-    private void updateMatrixDisplay(double[][] matrix) {
+    private void updateMatrixDisplay() {
         StringBuilder sb = new StringBuilder();
         DecimalFormat df = new DecimalFormat();
 
         for (int i = 0; i < 3; i++) {
             sb.append("| ");
             for (int j = 0; j < 3; j++) {
-                sb.append(String.format("%6s", df.format(matrix[i][j])));
+                sb.append(String.format("%6s", df.format(manipulationMatrix[i][j])));
                 sb.append(" ");
             }
             sb.append("|\n");
@@ -444,7 +488,6 @@ public class MakeCurveDialog extends JDialog {
             g2d.setColor(Color.BLUE);
             bezierDrawer.drawBezier(g2d, getPoints(), parseIntField(curveStepsFiield), 0, 0);
         }
-
         g2d.dispose();
         return result;
     }
