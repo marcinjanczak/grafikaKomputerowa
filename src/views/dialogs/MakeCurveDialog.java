@@ -308,6 +308,8 @@ public class MakeCurveDialog extends JDialog {
         JButton rotateButton = new JButton("Obróć");
         rotateField = new JTextField();
 
+        JButton setPointsButton = new JButton("Zastosuj");
+
         manipulationPanel.add(scaleButton);
         manipulationPanel.add(scaleXField);
         manipulationPanel.add(scaleYField);
@@ -318,7 +320,7 @@ public class MakeCurveDialog extends JDialog {
 
         manipulationPanel.add(rotateButton);
         manipulationPanel.add(rotateField);
-        manipulationPanel.add(new JLabel(""));
+        manipulationPanel.add(setPointsButton);
 
 
         scaleButton.addActionListener(e -> {
@@ -331,6 +333,10 @@ public class MakeCurveDialog extends JDialog {
         });
         rotateButton.addActionListener(e -> {
             setRotate();
+            clearManipulationFields();
+        });
+        rotateButton.addActionListener(e -> {
+            setNewPoints();
             clearManipulationFields();
         });
 
@@ -378,11 +384,21 @@ public class MakeCurveDialog extends JDialog {
         updateMatrixDisplay();
         List<Point> newPoints = bezierDrawer.calculateNewPoints(manipulationMatrix, getPoints());
 
+        updateMatrixDisplay();
+
         selectedPoints.clear();
         selectedPoints.addAll(newPoints);
-//        updateListModel(newPoints);
         repaint();
 
+    }
+
+    private void setNewPoints(){
+        List<Point> newPoints = bezierDrawer.calculateNewPoints(manipulationMatrix, getPoints());
+
+        selectedPoints.clear();
+        selectedPoints.addAll(newPoints);
+
+        repaint();
     }
 
     private void setMove() {
@@ -398,8 +414,6 @@ public class MakeCurveDialog extends JDialog {
         selectedPoints.clear();
         selectedPoints.addAll(newPoints);
 
-//        updateListModel(newPoints);
-//        setSelectedPoints(newPoints);
         repaint();
     }
 
@@ -415,16 +429,7 @@ public class MakeCurveDialog extends JDialog {
         selectedPoints.clear();
         selectedPoints.addAll(newPoints);
 
-//        updateListModel(newPoints);
-//        setSelectedPoints(newPoints);
         repaint();
-    }
-
-    private void updateListModel(List<Point> points) {
-        listModel.clear();
-        for (Point p : points) {
-            listModel.addElement(p);
-        }
     }
 
     private void updateMatrixDisplay() {
@@ -496,11 +501,6 @@ public class MakeCurveDialog extends JDialog {
     public List<Point> getPoints() {
         return selectedPoints;
     }
-
-    public void setSelectedPoints(List<Point> selectedPoints) {
-        this.selectedPoints = selectedPoints;
-    }
-
     private static class PointListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(
